@@ -8,15 +8,12 @@
 
 #define SEND_RPC_HEADERSIZE 4
 
-namespace sylar
-{
-namespace rpc
-{
+namespace sylar{
+namespace rpc{
 /**
  * @brief RPC调用方使用UserServiceRpc_Stub调用远程方法，其实是通过 RpcChannel 调用 CallMethod
 */
-class SylarRpcChannel : public google::protobuf::RpcChannel
-{
+class SylarRpcChannel : public google::protobuf::RpcChannel{
 public:
     /**
     * @brief 所有使用 stub

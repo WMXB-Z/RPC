@@ -474,7 +474,7 @@ private:
     uint8_t m_version;
     /// 是否自动关闭
     bool m_close;
-    /// 是否为websocket
+    /// 是否为websocket(双向通信的方式)
     bool m_websocket;
     /// 参数解析标志位，0:未解析，1:已解析url参数, 2:已解析http消息体中的参数，4:已解析cookies
     uint8_t m_parserParamFlag;
@@ -490,7 +490,7 @@ private:
     std::string m_body;
     /// 请求头部MAP
     MapType m_headers;
-    /// 请求参数MAP
+    /// 请求参数MAP（请求行中的query对应的参数map）
     MapType m_params;
     /// 请求Cookie MAP
     MapType m_cookies;

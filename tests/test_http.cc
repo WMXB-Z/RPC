@@ -1,8 +1,6 @@
 /**
  * @file test_http.cc
  * @brief HTTP请求类与响应类测试
- * @version 0.1
- * @date 2021-09-25
  */
 #include "sylar/sylar.h"
 

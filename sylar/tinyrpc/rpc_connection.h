@@ -6,11 +6,12 @@
 #include <google/protobuf/message.h>
 #include <memory>
 #include "../streams/socket_stream.h"
+#include "sylar/http/http.h"
+#include "sylar/http/http_connection.h"
 
-#define SEND_RPC_HEADERSIZE 4
 namespace sylar{
 namespace tinyrpc{
-class RpcConnection: public SocketStream{
+class RpcConnection: public http::HttpConnection{
 public:
     typedef std::shared_ptr<RpcConnection>  ptr;
 
@@ -22,31 +23,20 @@ public:
     RpcConnection(Socket::ptr sock, bool owner = true);
 
     /**
-     * @brief 将request拼接只rpchead中，并序列化
+     * @brief 将待发送的数据，封装成一个HttpRequest类
      */
-    static bool encode(const google::protobuf::MethodDescriptor *method,
+    static bool putToHttpRequest(const google::protobuf::MethodDescriptor *method,
                 google::protobuf::RpcController *controller, 
                 const google::protobuf::Message *request,
-                std::string& rpc_send_str);
+                http::HttpRequest::ptr http_req);
 
     /**
-     * @brief 将收到的结果，反序列化为response
+     * @brief 将收到的HttpResponse，拆解得到需要的数据
      */
-    static bool decode(google::protobuf::RpcController *controller,
-                google::protobuf::Message *response,
-                std::string& rpc_recv_str);
-    
-    /**
-     * @brief 将序列化之后的RPC请求，通过stream进行TCP传输
-     */
-    bool sendRequest();
+    static bool getFromHttpResponse(http::HttpResponse::ptr http_response,
+                                    google::protobuf::RpcController *controller,
+                                    google::protobuf::Message *response);
 
-    /**
-     * @brief 接收对端的回复，并反序列化为RPC响应报文
-     * @return true 
-     * @return false 
-     */
-    bool recvResponse();
 };
 
 }   //namespace tinyrpc

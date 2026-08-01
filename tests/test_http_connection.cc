@@ -1,8 +1,6 @@
 /**
  * @file test_http_connection.cc
  * @brief HTTP客户端类测试
- * @version 0.1
- * @date 2021-12-09
  */
 #include "sylar/sylar.h"
 #include <iostream>

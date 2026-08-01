@@ -1,96 +1,63 @@
 #include "rpc_channel_client.h"
-#include <google/protobuf/descriptor.h>
-#include "rpc_controller.h"
-#include "rpc_header.pb.h"
-#include <sys/socket.h>
-#include "../socket.h"
+#include <memory>
+#include "sylar/http/http.h"
+#include "sylar/tinyrpc/rpc_connection.h"
 
-
-namespace sylar 
-{
-namespace tinyrpc 
-{
+namespace sylar {
+namespace tinyrpc {
 void RpcChannelClient::CallMethod(const google::protobuf::MethodDescriptor *method,
                                   google::protobuf::RpcController *controller, 
                                   const google::protobuf::Message *request,
                                   google::protobuf::Message *response, 
                                   google::protobuf::Closure *done) {
+    if(!method || !controller || !request || !response){
+        std::cout << "method, controller, request, response must be not nullptr" << std::endl;
+        return;
+    }
     // ====================================================
-    // 获取服务名以及需要调用的方法
-    const google::protobuf::ServiceDescriptor *service_info = method->service();
-    std::string service_name = service_info->name();
-    std::string method_name = method->name();
-    // 设置RpcController相关的状态信息
+    // 创建http request报文
+    http::HttpRequest::ptr http_req(new http::HttpRequest);
+    RpcConnection::putToHttpRequest(method, controller, request, http_req);
 
-    // 将request进行序列化，转为特定编码格式（这里交由TCP层去实现）
-
-    std::string param_str;
-    if (!request->SerializeToString(&param_str)) {
-        controller->SetFailed("Serialize reauest error!");
+    // 进行TCP传输，并获得http response响应报文
+    // todo:这里加载 配置的方式需要修改
+    sylar::Address::ptr addr = sylar::Address::LookupAnyIPAddress("服务器IP:服务port");
+    if (!addr) {
+        controller->SetFailed("get addr error");
         return;
     }
-     // set rpcheader
-    RpcHeader rpcheader;
-    uint32_t param_size = param_str.size();
-    rpcheader.set_service_name(service_name);
-    rpcheader.set_method_name(method_name);
-    rpcheader.set_args_size(param_size);
 
-    // 序列化 rpcheader部分
-    std::string rpcheader_str;
-    if (!rpcheader.SerializeToString(&rpcheader_str)){
-        controller->SetFailed("Serialize request rpcheader error !!!");
+    sylar::Socket::ptr sock = sylar::Socket::CreateTCP(addr);
+    // todo: sock->setRecvTimeout(...) 或在 TinyRpcController 里加超时字段。
+    bool rt  = sock->connect(addr);
+    if (!rt) {
+        controller->SetFailed("connect failed");
         return;
     }
-    uint32_t send_all_size = SEND_RPC_HEADERSIZE + rpcheader_str.size() + args_str.size();
-    uint32_t rpcheader_size = rpcheader_str.size();
 
-    // 组装 rpc 请求帧
-    std::string rpc_send_str;
-    // send_all_size
-    rpc_send_str += std::string((char*)&send_all_size, 4);
-    // rpcheader_size 
-    rpc_send_str += std::string((char*)&rpcheader_size, 4);
-    // rpcheader部分的二进制串
-    rpc_send_str += rpcheader_str;
-    // 参数部分的二进制串
-    rpc_send_str += param_str;
-// =========================================
-    // todo: 进行TCP传输
-    auto socket = sylar::Socket::CreateTCPSocket();
-    // SYLAR_ASSERT(socket);
-
-    auto addr = sylar::Address::LookupAnyIPAddress("0.0.0.0:12345");
-    // SYLAR_ASSERT(addr);
-
-    if(!socket->connect(addr)){
-        // SYLAR_ASSERT(ret);
-        controller->SetFailed("connect error : " + std::to_string(errno));
+    // 基于TCP进行服务请求
+    // todo:每次都新建TCP连接，性能较差。后续可参考项目里的 HttpConnectionPool 做连接复用。
+    http::HttpConnection::ptr conn(new http::HttpConnection(sock));
+    if(conn->sendRequest(http_req) <= 0){
+        controller->SetFailed("send request error!");
         return;
     }
-    
-    if (-1 == send(clientfd, rpc_send_str.c_str(), rpc_send_str.size(), 0))
-    {
-        controller->SetFailed("send error : " + std::to_string(errno));
-        close(clientfd);
-        return;       
-    }
-
-    char recv_buf[1024] = {0};
-    uint32_t recv_size = 0;
-    if ((recv_size = recv(clientfd, recv_buf, 1024, 0)) < 0)
-    {
-        controller->SetFailed("recv error : " + std::to_string(errno));
-        close(clientfd);
+    http::HttpResponse::ptr http_res = conn->recvResponse();
+    if(!http_res){
+        controller->SetFailed("recv response is nullptr!");
         return;
     }
-    // ========================================================
-    // 接收处理结果，并反序列化的得到response
+    if(http_res->getStatus() != http::HttpStatus::OK){
+        controller->SetFailed("http server error!");
+        return;
+    }
+    // 根据http response报文得到 response
+    RpcConnection::getFromHttpResponse(http_res, controller, response);
 
     // 如果设置了回调函数，则执行
-    if (done) {
-        done->Run();
-    }
+    // if (done) {
+    //     done->Run();
+    // }
 }
 }  // namespace tinyrpc
 
