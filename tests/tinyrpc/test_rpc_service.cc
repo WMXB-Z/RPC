@@ -17,22 +17,13 @@ void run() {
     while (!server->bind(addr)) {
         sleep(2);
     }
-    auto sd = server->getServletDispatch();
+    sylar::http::ServletDispatch::ptr sd = server->getServletDispatch();
 
     sylar::tinyrpc::EchoAddServiceImp::ptr service(new sylar::tinyrpc::EchoAddServiceImp);
-    sylar::http::Servlet::ptr slt(new sylar::tinyrpc::RpcFuncServlet(std::bind(
-                                                                        &sylar::tinyrpc::EchoAddServiceImp::CallMethod,
-                                                                        service,
-                                                                        std::placeholders::_1,
-                                                                        std::placeholders::_2,
-                                                                        std::placeholders::_3,
-                                                                        std::placeholders::_4,
-                                                                        std::placeholders::_5)));
-    // 注册servlet服务，测试echo服务
-    sd->addServlet("/EchoAddService/queryEcho", slt);
-
-    // 注册servlet服务，测试add服务
-    sd->addServlet("/EchoAddService/queryAdd", slt);
+    // RpcFuncServlet 持有 Service 对象，通过反射处理该服务的所有方法
+    sylar::http::Servlet::ptr servlet(new sylar::tinyrpc::RpcFuncServlet(service));
+    // 注册servlet服务，一个 servlet 覆盖该服务下（例如这里的EchoAddService）的所有方法（queryEcho、queryAdd...）
+    sd->addGlobServlet("/EchoAddService/*", servlet);
     server->start();
 }
 
@@ -47,15 +38,3 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-
-    // 这里的bind等价于：
-    // lambda等价形式：
-    // [service](参数1, 参数2, 参数3, 参数4, 参数5){
-    //     service->CallMethod(
-    //         参数1,
-    //         参数2,
-    //         参数3,
-    //         参数4,
-    //         参数5
-    //     );
-    // }

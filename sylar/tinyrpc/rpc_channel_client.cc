@@ -14,7 +14,7 @@ void RpcChannelClient::CallMethod(const google::protobuf::MethodDescriptor *meth
         std::cout << "method, controller, request, response must be not nullptr" << std::endl;
         return;
     }
-    // ====================================================
+
     // 创建http request报文
     http::HttpRequest::ptr http_req(new http::HttpRequest);
     if(!RpcConnection::putToHttpRequest(method, request, http_req)){
@@ -61,9 +61,9 @@ void RpcChannelClient::CallMethod(const google::protobuf::MethodDescriptor *meth
     }
 
     // 如果设置了回调函数，则执行
-    // if (done) {
-    //     done->Run();
-    // }
+    if (done) {
+        done->Run();
+    }
     
 }   
 }  // namespace tinyrpc

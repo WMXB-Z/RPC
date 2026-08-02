@@ -5,8 +5,6 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/descriptor.h>
 
-#define SEND_RPC_HEADERSIZE 4
-
 namespace sylar
 {
 namespace tinyrpc

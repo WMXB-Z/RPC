@@ -23,11 +23,11 @@ bool RpcConnection::putToHttpRequest(const google::protobuf::MethodDescriptor *m
     http_req->setVersion(0x11);
     http_req->setHeader("service_name", service_desc->name());
     http_req->setHeader("method_name", method->name());
+    // todo: 持久化 不应该在此处设置
     http_req->setHeader("Connection", "keep-alive");
     http_req->appendBody(param_str);
 
     http_req->init();
-
     return true;
 }
 

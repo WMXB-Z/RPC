@@ -64,15 +64,13 @@ void ServletDispatch::addServlet(const std::string& uri
 void ServletDispatch::addGlobServlet(const std::string& uri
                                     ,Servlet::ptr slt) {
     RWMutexType::WriteLock lock(m_mutex);
-    for(auto it = m_globs.begin();
-            it != m_globs.end(); ++it) {
+    for(auto it = m_globs.begin();it != m_globs.end(); ++it) {
         if(it->first == uri) {
             m_globs.erase(it);
             break;
         }
     }
-    m_globs.push_back(std::make_pair(uri
-                , std::make_shared<HoldServletCreator>(slt)));
+    m_globs.push_back(std::make_pair(uri, std::make_shared<HoldServletCreator>(slt)));
 }
 
 void ServletDispatch::addGlobServlet(const std::string& uri
@@ -104,8 +102,7 @@ Servlet::ptr ServletDispatch::getServlet(const std::string& uri) {
 
 Servlet::ptr ServletDispatch::getGlobServlet(const std::string& uri) {
     RWMutexType::ReadLock lock(m_mutex);
-    for(auto it = m_globs.begin();
-            it != m_globs.end(); ++it) {
+    for(auto it = m_globs.begin();it != m_globs.end(); ++it) {
         if(it->first == uri) {
             return it->second->get();
         }
