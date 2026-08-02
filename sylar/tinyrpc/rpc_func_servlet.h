@@ -7,35 +7,29 @@
 #include "sylar/http/servlet.h"
 namespace sylar{
 namespace tinyrpc{
- /**
- * @brief 函数式Servlet
+/**
+ * @brief RPC 函数式 Servlet
+ * @details 与客户端协议（rpc_connection.cc）对应：
+ *         - HttpRequest header: service_name / method_name
+ *         - HttpRequest body: 序列化后的 request 参数
+ *         通过持有的 protobuf Service 反射出 method 和 request/response 类型，
+ *         反序列化后调用 Service::CallMethod，把结果序列化进 HttpResponse body。
  */
 class RpcFuncServlet : public http::Servlet {
 public:
-    /// 智能指针类型定义
     typedef std::shared_ptr<RpcFuncServlet> ptr;
-    /// 函数回调类型定义
-    // typedef std::function<int32_t (http::HttpRequest::ptr request
-    //                , http::HttpResponse::ptr response
-    //                , http::HttpSession::ptr session)> callback;
 
-    // 这里要做的回调函数就是ServiceImp中的callMethod，所以参数类型较确定，不确定的是具体哪一个ServiceImp对象调用
-    typedef std::function<void (const google::protobuf::MethodDescriptor* method,
-                                   google::protobuf::RpcController* controller,
-                                   google::protobuf::Message* request,
-                                   google::protobuf::Message* response,
-                                   google::protobuf::Closure* done)> callback;
     /**
      * @brief 构造函数
-     * @param[in] cb 回调函数
+     * @param[in] service 注册的 protobuf 服务（持有所有权，保证服务存活时间不短于 servlet）
      */
-    RpcFuncServlet(callback cb);
+    RpcFuncServlet(std::shared_ptr<google::protobuf::Service> service);
     virtual int32_t handle(http::HttpRequest::ptr request
                    , http::HttpResponse::ptr response
                    , http::HttpSession::ptr session) override;
 private:
-    /// 回调函数
-    callback m_cb;
+    /// !具体服务对象（提供描述符与反射能力，由 shared_ptr 管理生命周期）
+    std::shared_ptr<google::protobuf::Service> m_service;
 };
 }
 }

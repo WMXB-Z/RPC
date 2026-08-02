@@ -40,5 +40,20 @@ int main(){
         std::cout << "rpc process error : " << controller.ErrorText() << std::endl;
     }
 
+    // （3）测试sub服务(可以做到与后端框架层解耦，新增服务无需改动)
+    // sylar::tinyrpc::SubRequest sub_request;
+    // sub_request.set_a(1);
+    // sub_request.set_b(2);
+    // sylar::tinyrpc::SubResponse sub_response;
+
+    // controller.Reset();
+    // stub.querySub(&controller, &sub_request, &sub_response, nullptr);
+    // if (!controller.Failed()){
+    //     std::cout << "rpc process is successful" << std::endl;
+    //     std::cout << "Ans is :" << sub_response.ans() << std::endl;
+    // }else{
+    //     std::cout << "rpc process error : " << controller.ErrorText() << std::endl;
+    // }
+
     return 0;
 }

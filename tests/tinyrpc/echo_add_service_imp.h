@@ -17,6 +17,11 @@ public:
         return a + b;
     }
 
+    // int32_t sub(int32_t a, int32_t b){
+    //     std::cout << "auerySub PRC is successful";
+    //     return a - b;
+    // }
+
     
     void queryEcho(::google::protobuf::RpcController* controller,
                     const ::sylar::tinyrpc::EchoRequest* request,
@@ -51,6 +56,23 @@ public:
             done->Run();
         }
     }
+
+    // void querySub(::google::protobuf::RpcController* controller,
+    //             const ::sylar::tinyrpc::SubRequest* request,
+    //             ::sylar::tinyrpc::SubResponse* response,
+    //             ::google::protobuf::Closure* done) override{
+
+    //     int32_t a = request->a();
+    //     int32_t b = request->b();
+    //     int32_t ans = sub(a, b);
+    //     sylar::tinyrpc::ResultCode* code = response->mutable_result();
+    //     code->set_errcode(0);
+    //     code->set_errmsg("");
+    //     response->set_ans(ans);
+    //     if(done){
+    //         done->Run();
+    //     }
+    // }
 };
 }
 }

@@ -48,7 +48,7 @@ struct TableStruct_echo_5fadd_2epoto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxillaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[5]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[7]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -72,6 +72,12 @@ extern EchoResponseDefaultTypeInternal _EchoResponse_default_instance_;
 class ResultCode;
 class ResultCodeDefaultTypeInternal;
 extern ResultCodeDefaultTypeInternal _ResultCode_default_instance_;
+class SubRequest;
+class SubRequestDefaultTypeInternal;
+extern SubRequestDefaultTypeInternal _SubRequest_default_instance_;
+class SubResponse;
+class SubResponseDefaultTypeInternal;
+extern SubResponseDefaultTypeInternal _SubResponse_default_instance_;
 }  // namespace tinyrpc
 }  // namespace sylar
 PROTOBUF_NAMESPACE_OPEN
@@ -80,6 +86,8 @@ template<> ::sylar::tinyrpc::AddResponse* Arena::CreateMaybeMessage<::sylar::tin
 template<> ::sylar::tinyrpc::EchoRequest* Arena::CreateMaybeMessage<::sylar::tinyrpc::EchoRequest>(Arena*);
 template<> ::sylar::tinyrpc::EchoResponse* Arena::CreateMaybeMessage<::sylar::tinyrpc::EchoResponse>(Arena*);
 template<> ::sylar::tinyrpc::ResultCode* Arena::CreateMaybeMessage<::sylar::tinyrpc::ResultCode>(Arena*);
+template<> ::sylar::tinyrpc::SubRequest* Arena::CreateMaybeMessage<::sylar::tinyrpc::SubRequest>(Arena*);
+template<> ::sylar::tinyrpc::SubResponse* Arena::CreateMaybeMessage<::sylar::tinyrpc::SubResponse>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace sylar {
 namespace tinyrpc {
@@ -879,6 +887,311 @@ class AddResponse PROTOBUF_FINAL :
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_echo_5fadd_2epoto;
 };
+// -------------------------------------------------------------------
+
+class SubRequest PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:sylar.tinyrpc.SubRequest) */ {
+ public:
+  inline SubRequest() : SubRequest(nullptr) {};
+  virtual ~SubRequest();
+
+  SubRequest(const SubRequest& from);
+  SubRequest(SubRequest&& from) noexcept
+    : SubRequest() {
+    *this = ::std::move(from);
+  }
+
+  inline SubRequest& operator=(const SubRequest& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline SubRequest& operator=(SubRequest&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const SubRequest& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const SubRequest* internal_default_instance() {
+    return reinterpret_cast<const SubRequest*>(
+               &_SubRequest_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    5;
+
+  friend void swap(SubRequest& a, SubRequest& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(SubRequest* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(SubRequest* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline SubRequest* New() const final {
+    return CreateMaybeMessage<SubRequest>(nullptr);
+  }
+
+  SubRequest* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<SubRequest>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const SubRequest& from);
+  void MergeFrom(const SubRequest& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(SubRequest* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "sylar.tinyrpc.SubRequest";
+  }
+  protected:
+  explicit SubRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_echo_5fadd_2epoto);
+    return ::descriptor_table_echo_5fadd_2epoto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kAFieldNumber = 1,
+    kBFieldNumber = 2,
+  };
+  // int32 a = 1;
+  void clear_a();
+  ::PROTOBUF_NAMESPACE_ID::int32 a() const;
+  void set_a(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_a() const;
+  void _internal_set_a(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // int32 b = 2;
+  void clear_b();
+  ::PROTOBUF_NAMESPACE_ID::int32 b() const;
+  void set_b(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_b() const;
+  void _internal_set_b(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:sylar.tinyrpc.SubRequest)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::int32 a_;
+  ::PROTOBUF_NAMESPACE_ID::int32 b_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_echo_5fadd_2epoto;
+};
+// -------------------------------------------------------------------
+
+class SubResponse PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:sylar.tinyrpc.SubResponse) */ {
+ public:
+  inline SubResponse() : SubResponse(nullptr) {};
+  virtual ~SubResponse();
+
+  SubResponse(const SubResponse& from);
+  SubResponse(SubResponse&& from) noexcept
+    : SubResponse() {
+    *this = ::std::move(from);
+  }
+
+  inline SubResponse& operator=(const SubResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline SubResponse& operator=(SubResponse&& from) noexcept {
+    if (GetArena() == from.GetArena()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const SubResponse& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const SubResponse* internal_default_instance() {
+    return reinterpret_cast<const SubResponse*>(
+               &_SubResponse_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    6;
+
+  friend void swap(SubResponse& a, SubResponse& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(SubResponse* other) {
+    if (other == this) return;
+    if (GetArena() == other->GetArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(SubResponse* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetArena() == other->GetArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline SubResponse* New() const final {
+    return CreateMaybeMessage<SubResponse>(nullptr);
+  }
+
+  SubResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<SubResponse>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const SubResponse& from);
+  void MergeFrom(const SubResponse& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(SubResponse* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "sylar.tinyrpc.SubResponse";
+  }
+  protected:
+  explicit SubResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_echo_5fadd_2epoto);
+    return ::descriptor_table_echo_5fadd_2epoto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kResultFieldNumber = 2,
+    kAnsFieldNumber = 1,
+  };
+  // .sylar.tinyrpc.ResultCode result = 2;
+  bool has_result() const;
+  private:
+  bool _internal_has_result() const;
+  public:
+  void clear_result();
+  const ::sylar::tinyrpc::ResultCode& result() const;
+  ::sylar::tinyrpc::ResultCode* release_result();
+  ::sylar::tinyrpc::ResultCode* mutable_result();
+  void set_allocated_result(::sylar::tinyrpc::ResultCode* result);
+  private:
+  const ::sylar::tinyrpc::ResultCode& _internal_result() const;
+  ::sylar::tinyrpc::ResultCode* _internal_mutable_result();
+  public:
+  void unsafe_arena_set_allocated_result(
+      ::sylar::tinyrpc::ResultCode* result);
+  ::sylar::tinyrpc::ResultCode* unsafe_arena_release_result();
+
+  // int32 ans = 1;
+  void clear_ans();
+  ::PROTOBUF_NAMESPACE_ID::int32 ans() const;
+  void set_ans(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_ans() const;
+  void _internal_set_ans(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:sylar.tinyrpc.SubResponse)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::sylar::tinyrpc::ResultCode* result_;
+  ::PROTOBUF_NAMESPACE_ID::int32 ans_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_echo_5fadd_2epoto;
+};
 // ===================================================================
 
 class EchoAddService_Stub;
@@ -901,6 +1214,10 @@ class EchoAddService : public ::PROTOBUF_NAMESPACE_ID::Service {
   virtual void queryAdd(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                        const ::sylar::tinyrpc::AddRequest* request,
                        ::sylar::tinyrpc::AddResponse* response,
+                       ::google::protobuf::Closure* done);
+  virtual void querySub(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                       const ::sylar::tinyrpc::SubRequest* request,
+                       ::sylar::tinyrpc::SubResponse* response,
                        ::google::protobuf::Closure* done);
 
   // implements Service ----------------------------------------------
@@ -938,6 +1255,10 @@ class EchoAddService_Stub : public EchoAddService {
   void queryAdd(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                        const ::sylar::tinyrpc::AddRequest* request,
                        ::sylar::tinyrpc::AddResponse* response,
+                       ::google::protobuf::Closure* done);
+  void querySub(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                       const ::sylar::tinyrpc::SubRequest* request,
+                       ::sylar::tinyrpc::SubResponse* response,
                        ::google::protobuf::Closure* done);
  private:
   ::PROTOBUF_NAMESPACE_ID::RpcChannel* channel_;
@@ -1458,9 +1779,162 @@ inline void AddResponse::set_allocated_result(::sylar::tinyrpc::ResultCode* resu
   // @@protoc_insertion_point(field_set_allocated:sylar.tinyrpc.AddResponse.result)
 }
 
+// -------------------------------------------------------------------
+
+// SubRequest
+
+// int32 a = 1;
+inline void SubRequest::clear_a() {
+  a_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 SubRequest::_internal_a() const {
+  return a_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 SubRequest::a() const {
+  // @@protoc_insertion_point(field_get:sylar.tinyrpc.SubRequest.a)
+  return _internal_a();
+}
+inline void SubRequest::_internal_set_a(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  a_ = value;
+}
+inline void SubRequest::set_a(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_a(value);
+  // @@protoc_insertion_point(field_set:sylar.tinyrpc.SubRequest.a)
+}
+
+// int32 b = 2;
+inline void SubRequest::clear_b() {
+  b_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 SubRequest::_internal_b() const {
+  return b_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 SubRequest::b() const {
+  // @@protoc_insertion_point(field_get:sylar.tinyrpc.SubRequest.b)
+  return _internal_b();
+}
+inline void SubRequest::_internal_set_b(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  b_ = value;
+}
+inline void SubRequest::set_b(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_b(value);
+  // @@protoc_insertion_point(field_set:sylar.tinyrpc.SubRequest.b)
+}
+
+// -------------------------------------------------------------------
+
+// SubResponse
+
+// int32 ans = 1;
+inline void SubResponse::clear_ans() {
+  ans_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 SubResponse::_internal_ans() const {
+  return ans_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 SubResponse::ans() const {
+  // @@protoc_insertion_point(field_get:sylar.tinyrpc.SubResponse.ans)
+  return _internal_ans();
+}
+inline void SubResponse::_internal_set_ans(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  ans_ = value;
+}
+inline void SubResponse::set_ans(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_ans(value);
+  // @@protoc_insertion_point(field_set:sylar.tinyrpc.SubResponse.ans)
+}
+
+// .sylar.tinyrpc.ResultCode result = 2;
+inline bool SubResponse::_internal_has_result() const {
+  return this != internal_default_instance() && result_ != nullptr;
+}
+inline bool SubResponse::has_result() const {
+  return _internal_has_result();
+}
+inline void SubResponse::clear_result() {
+  if (GetArena() == nullptr && result_ != nullptr) {
+    delete result_;
+  }
+  result_ = nullptr;
+}
+inline const ::sylar::tinyrpc::ResultCode& SubResponse::_internal_result() const {
+  const ::sylar::tinyrpc::ResultCode* p = result_;
+  return p != nullptr ? *p : *reinterpret_cast<const ::sylar::tinyrpc::ResultCode*>(
+      &::sylar::tinyrpc::_ResultCode_default_instance_);
+}
+inline const ::sylar::tinyrpc::ResultCode& SubResponse::result() const {
+  // @@protoc_insertion_point(field_get:sylar.tinyrpc.SubResponse.result)
+  return _internal_result();
+}
+inline void SubResponse::unsafe_arena_set_allocated_result(
+    ::sylar::tinyrpc::ResultCode* result) {
+  if (GetArena() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(result_);
+  }
+  result_ = result;
+  if (result) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:sylar.tinyrpc.SubResponse.result)
+}
+inline ::sylar::tinyrpc::ResultCode* SubResponse::release_result() {
+  auto temp = unsafe_arena_release_result();
+  if (GetArena() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+  return temp;
+}
+inline ::sylar::tinyrpc::ResultCode* SubResponse::unsafe_arena_release_result() {
+  // @@protoc_insertion_point(field_release:sylar.tinyrpc.SubResponse.result)
+  
+  ::sylar::tinyrpc::ResultCode* temp = result_;
+  result_ = nullptr;
+  return temp;
+}
+inline ::sylar::tinyrpc::ResultCode* SubResponse::_internal_mutable_result() {
+  
+  if (result_ == nullptr) {
+    auto* p = CreateMaybeMessage<::sylar::tinyrpc::ResultCode>(GetArena());
+    result_ = p;
+  }
+  return result_;
+}
+inline ::sylar::tinyrpc::ResultCode* SubResponse::mutable_result() {
+  // @@protoc_insertion_point(field_mutable:sylar.tinyrpc.SubResponse.result)
+  return _internal_mutable_result();
+}
+inline void SubResponse::set_allocated_result(::sylar::tinyrpc::ResultCode* result) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
+  if (message_arena == nullptr) {
+    delete result_;
+  }
+  if (result) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(result);
+    if (message_arena != submessage_arena) {
+      result = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, result, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  result_ = result;
+  // @@protoc_insertion_point(field_set_allocated:sylar.tinyrpc.SubResponse.result)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

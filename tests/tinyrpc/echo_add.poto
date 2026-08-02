@@ -26,7 +26,20 @@ message AddResponse{
     ResultCode result = 2;
 }
 
+/*
+message SubRequest{
+    int32 a = 1;
+    int32 b = 2;
+}
+#message SubResponse{
+    int32 ans = 1;
+    ResultCode result = 2;
+}
+*/
+
+
 service EchoAddService {
   rpc queryEcho(EchoRequest) returns (EchoResponse);
   rpc queryAdd(AddRequest) returns (AddResponse);
+  //rpc querySub(SubRequest) returns (SubResponse);
 }

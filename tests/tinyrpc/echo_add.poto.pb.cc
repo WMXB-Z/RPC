@@ -37,6 +37,14 @@ class AddResponseDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<AddResponse> _instance;
 } _AddResponse_default_instance_;
+class SubRequestDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<SubRequest> _instance;
+} _SubRequest_default_instance_;
+class SubResponseDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<SubResponse> _instance;
+} _SubResponse_default_instance_;
 }  // namespace tinyrpc
 }  // namespace sylar
 static void InitDefaultsscc_info_AddRequest_echo_5fadd_2epoto() {
@@ -111,7 +119,36 @@ static void InitDefaultsscc_info_ResultCode_echo_5fadd_2epoto() {
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ResultCode_echo_5fadd_2epoto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_ResultCode_echo_5fadd_2epoto}, {}};
 
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_echo_5fadd_2epoto[5];
+static void InitDefaultsscc_info_SubRequest_echo_5fadd_2epoto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::sylar::tinyrpc::_SubRequest_default_instance_;
+    new (ptr) ::sylar::tinyrpc::SubRequest();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::sylar::tinyrpc::SubRequest::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_SubRequest_echo_5fadd_2epoto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_SubRequest_echo_5fadd_2epoto}, {}};
+
+static void InitDefaultsscc_info_SubResponse_echo_5fadd_2epoto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::sylar::tinyrpc::_SubResponse_default_instance_;
+    new (ptr) ::sylar::tinyrpc::SubResponse();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::sylar::tinyrpc::SubResponse::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_SubResponse_echo_5fadd_2epoto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_SubResponse_echo_5fadd_2epoto}, {
+      &scc_info_ResultCode_echo_5fadd_2epoto.base,}};
+
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_echo_5fadd_2epoto[7];
 static constexpr ::PROTOBUF_NAMESPACE_ID::EnumDescriptor const** file_level_enum_descriptors_echo_5fadd_2epoto = nullptr;
 static const ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor* file_level_service_descriptors_echo_5fadd_2epoto[1];
 
@@ -150,6 +187,20 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_echo_5fadd_2epoto::offsets[] P
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::sylar::tinyrpc::AddResponse, sum_),
   PROTOBUF_FIELD_OFFSET(::sylar::tinyrpc::AddResponse, result_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::sylar::tinyrpc::SubRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::sylar::tinyrpc::SubRequest, a_),
+  PROTOBUF_FIELD_OFFSET(::sylar::tinyrpc::SubRequest, b_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::sylar::tinyrpc::SubResponse, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::sylar::tinyrpc::SubResponse, ans_),
+  PROTOBUF_FIELD_OFFSET(::sylar::tinyrpc::SubResponse, result_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::sylar::tinyrpc::ResultCode)},
@@ -157,6 +208,8 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 13, -1, sizeof(::sylar::tinyrpc::EchoResponse)},
   { 20, -1, sizeof(::sylar::tinyrpc::AddRequest)},
   { 27, -1, sizeof(::sylar::tinyrpc::AddResponse)},
+  { 34, -1, sizeof(::sylar::tinyrpc::SubRequest)},
+  { 41, -1, sizeof(::sylar::tinyrpc::SubResponse)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -165,6 +218,8 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::sylar::tinyrpc::_EchoResponse_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::sylar::tinyrpc::_AddRequest_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::sylar::tinyrpc::_AddResponse_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::sylar::tinyrpc::_SubRequest_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::sylar::tinyrpc::_SubResponse_default_instance_),
 };
 
 const char descriptor_table_protodef_echo_5fadd_2epoto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -175,27 +230,33 @@ const char descriptor_table_protodef_echo_5fadd_2epoto[] PROTOBUF_SECTION_VARIAB
   ".tinyrpc.ResultCode\"\"\n\nAddRequest\022\t\n\001a\030\001"
   " \001(\005\022\t\n\001b\030\002 \001(\005\"E\n\013AddResponse\022\013\n\003sum\030\001 "
   "\001(\005\022)\n\006result\030\002 \001(\0132\031.sylar.tinyrpc.Resu"
-  "ltCode2\231\001\n\016EchoAddService\022D\n\tqueryEcho\022\032"
-  ".sylar.tinyrpc.EchoRequest\032\033.sylar.tinyr"
-  "pc.EchoResponse\022A\n\010queryAdd\022\031.sylar.tiny"
-  "rpc.AddRequest\032\032.sylar.tinyrpc.AddRespon"
-  "seB\003\200\001\001b\006proto3"
+  "ltCode\"\"\n\nSubRequest\022\t\n\001a\030\001 \001(\005\022\t\n\001b\030\002 \001"
+  "(\005\"E\n\013SubResponse\022\013\n\003ans\030\001 \001(\005\022)\n\006result"
+  "\030\002 \001(\0132\031.sylar.tinyrpc.ResultCode2\334\001\n\016Ec"
+  "hoAddService\022D\n\tqueryEcho\022\032.sylar.tinyrp"
+  "c.EchoRequest\032\033.sylar.tinyrpc.EchoRespon"
+  "se\022A\n\010queryAdd\022\031.sylar.tinyrpc.AddReques"
+  "t\032\032.sylar.tinyrpc.AddResponse\022A\n\010querySu"
+  "b\022\031.sylar.tinyrpc.SubRequest\032\032.sylar.tin"
+  "yrpc.SubResponseB\003\200\001\001b\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_echo_5fadd_2epoto_deps[1] = {
 };
-static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_echo_5fadd_2epoto_sccs[5] = {
+static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_echo_5fadd_2epoto_sccs[7] = {
   &scc_info_AddRequest_echo_5fadd_2epoto.base,
   &scc_info_AddResponse_echo_5fadd_2epoto.base,
   &scc_info_EchoRequest_echo_5fadd_2epoto.base,
   &scc_info_EchoResponse_echo_5fadd_2epoto.base,
   &scc_info_ResultCode_echo_5fadd_2epoto.base,
+  &scc_info_SubRequest_echo_5fadd_2epoto.base,
+  &scc_info_SubResponse_echo_5fadd_2epoto.base,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_echo_5fadd_2epoto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_echo_5fadd_2epoto = {
-  false, false, descriptor_table_protodef_echo_5fadd_2epoto, "echo_add.poto", 455,
-  &descriptor_table_echo_5fadd_2epoto_once, descriptor_table_echo_5fadd_2epoto_sccs, descriptor_table_echo_5fadd_2epoto_deps, 5, 0,
+  false, false, descriptor_table_protodef_echo_5fadd_2epoto, "echo_add.poto", 629,
+  &descriptor_table_echo_5fadd_2epoto_once, descriptor_table_echo_5fadd_2epoto_sccs, descriptor_table_echo_5fadd_2epoto_deps, 7, 0,
   schemas, file_default_instances, TableStruct_echo_5fadd_2epoto::offsets,
-  file_level_metadata_echo_5fadd_2epoto, 5, file_level_enum_descriptors_echo_5fadd_2epoto, file_level_service_descriptors_echo_5fadd_2epoto,
+  file_level_metadata_echo_5fadd_2epoto, 7, file_level_enum_descriptors_echo_5fadd_2epoto, file_level_service_descriptors_echo_5fadd_2epoto,
 };
 
 // Force running AddDescriptors() at dynamic initialization time.
@@ -1366,6 +1427,484 @@ void AddResponse::InternalSwap(AddResponse* other) {
 
 // ===================================================================
 
+void SubRequest::InitAsDefaultInstance() {
+}
+class SubRequest::_Internal {
+ public:
+};
+
+SubRequest::SubRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:sylar.tinyrpc.SubRequest)
+}
+SubRequest::SubRequest(const SubRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::memcpy(&a_, &from.a_,
+    static_cast<size_t>(reinterpret_cast<char*>(&b_) -
+    reinterpret_cast<char*>(&a_)) + sizeof(b_));
+  // @@protoc_insertion_point(copy_constructor:sylar.tinyrpc.SubRequest)
+}
+
+void SubRequest::SharedCtor() {
+  ::memset(&a_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&b_) -
+      reinterpret_cast<char*>(&a_)) + sizeof(b_));
+}
+
+SubRequest::~SubRequest() {
+  // @@protoc_insertion_point(destructor:sylar.tinyrpc.SubRequest)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void SubRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+}
+
+void SubRequest::ArenaDtor(void* object) {
+  SubRequest* _this = reinterpret_cast< SubRequest* >(object);
+  (void)_this;
+}
+void SubRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void SubRequest::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const SubRequest& SubRequest::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_SubRequest_echo_5fadd_2epoto.base);
+  return *internal_default_instance();
+}
+
+
+void SubRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:sylar.tinyrpc.SubRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  ::memset(&a_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&b_) -
+      reinterpret_cast<char*>(&a_)) + sizeof(b_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* SubRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // int32 a = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          a_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // int32 b = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+          b_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* SubRequest::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:sylar.tinyrpc.SubRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int32 a = 1;
+  if (this->a() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->_internal_a(), target);
+  }
+
+  // int32 b = 2;
+  if (this->b() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(2, this->_internal_b(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:sylar.tinyrpc.SubRequest)
+  return target;
+}
+
+size_t SubRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:sylar.tinyrpc.SubRequest)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // int32 a = 1;
+  if (this->a() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+        this->_internal_a());
+  }
+
+  // int32 b = 2;
+  if (this->b() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+        this->_internal_b());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void SubRequest::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:sylar.tinyrpc.SubRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  const SubRequest* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<SubRequest>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:sylar.tinyrpc.SubRequest)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:sylar.tinyrpc.SubRequest)
+    MergeFrom(*source);
+  }
+}
+
+void SubRequest::MergeFrom(const SubRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:sylar.tinyrpc.SubRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.a() != 0) {
+    _internal_set_a(from._internal_a());
+  }
+  if (from.b() != 0) {
+    _internal_set_b(from._internal_b());
+  }
+}
+
+void SubRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:sylar.tinyrpc.SubRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void SubRequest::CopyFrom(const SubRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:sylar.tinyrpc.SubRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SubRequest::IsInitialized() const {
+  return true;
+}
+
+void SubRequest::InternalSwap(SubRequest* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(SubRequest, b_)
+      + sizeof(SubRequest::b_)
+      - PROTOBUF_FIELD_OFFSET(SubRequest, a_)>(
+          reinterpret_cast<char*>(&a_),
+          reinterpret_cast<char*>(&other->a_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata SubRequest::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
+void SubResponse::InitAsDefaultInstance() {
+  ::sylar::tinyrpc::_SubResponse_default_instance_._instance.get_mutable()->result_ = const_cast< ::sylar::tinyrpc::ResultCode*>(
+      ::sylar::tinyrpc::ResultCode::internal_default_instance());
+}
+class SubResponse::_Internal {
+ public:
+  static const ::sylar::tinyrpc::ResultCode& result(const SubResponse* msg);
+};
+
+const ::sylar::tinyrpc::ResultCode&
+SubResponse::_Internal::result(const SubResponse* msg) {
+  return *msg->result_;
+}
+SubResponse::SubResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:sylar.tinyrpc.SubResponse)
+}
+SubResponse::SubResponse(const SubResponse& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  if (from._internal_has_result()) {
+    result_ = new ::sylar::tinyrpc::ResultCode(*from.result_);
+  } else {
+    result_ = nullptr;
+  }
+  ans_ = from.ans_;
+  // @@protoc_insertion_point(copy_constructor:sylar.tinyrpc.SubResponse)
+}
+
+void SubResponse::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_SubResponse_echo_5fadd_2epoto.base);
+  ::memset(&result_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&ans_) -
+      reinterpret_cast<char*>(&result_)) + sizeof(ans_));
+}
+
+SubResponse::~SubResponse() {
+  // @@protoc_insertion_point(destructor:sylar.tinyrpc.SubResponse)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void SubResponse::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+  if (this != internal_default_instance()) delete result_;
+}
+
+void SubResponse::ArenaDtor(void* object) {
+  SubResponse* _this = reinterpret_cast< SubResponse* >(object);
+  (void)_this;
+}
+void SubResponse::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void SubResponse::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const SubResponse& SubResponse::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_SubResponse_echo_5fadd_2epoto.base);
+  return *internal_default_instance();
+}
+
+
+void SubResponse::Clear() {
+// @@protoc_insertion_point(message_clear_start:sylar.tinyrpc.SubResponse)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (GetArena() == nullptr && result_ != nullptr) {
+    delete result_;
+  }
+  result_ = nullptr;
+  ans_ = 0;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* SubResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // int32 ans = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          ans_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // .sylar.tinyrpc.ResultCode result = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          ptr = ctx->ParseMessage(_internal_mutable_result(), ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* SubResponse::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:sylar.tinyrpc.SubResponse)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int32 ans = 1;
+  if (this->ans() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->_internal_ans(), target);
+  }
+
+  // .sylar.tinyrpc.ResultCode result = 2;
+  if (this->has_result()) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+      InternalWriteMessage(
+        2, _Internal::result(this), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:sylar.tinyrpc.SubResponse)
+  return target;
+}
+
+size_t SubResponse::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:sylar.tinyrpc.SubResponse)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // .sylar.tinyrpc.ResultCode result = 2;
+  if (this->has_result()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
+        *result_);
+  }
+
+  // int32 ans = 1;
+  if (this->ans() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+        this->_internal_ans());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void SubResponse::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:sylar.tinyrpc.SubResponse)
+  GOOGLE_DCHECK_NE(&from, this);
+  const SubResponse* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<SubResponse>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:sylar.tinyrpc.SubResponse)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:sylar.tinyrpc.SubResponse)
+    MergeFrom(*source);
+  }
+}
+
+void SubResponse::MergeFrom(const SubResponse& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:sylar.tinyrpc.SubResponse)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.has_result()) {
+    _internal_mutable_result()->::sylar::tinyrpc::ResultCode::MergeFrom(from._internal_result());
+  }
+  if (from.ans() != 0) {
+    _internal_set_ans(from._internal_ans());
+  }
+}
+
+void SubResponse::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:sylar.tinyrpc.SubResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void SubResponse::CopyFrom(const SubResponse& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:sylar.tinyrpc.SubResponse)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SubResponse::IsInitialized() const {
+  return true;
+}
+
+void SubResponse::InternalSwap(SubResponse* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(SubResponse, ans_)
+      + sizeof(SubResponse::ans_)
+      - PROTOBUF_FIELD_OFFSET(SubResponse, result_)>(
+          reinterpret_cast<char*>(&result_),
+          reinterpret_cast<char*>(&other->result_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata SubResponse::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
 EchoAddService::~EchoAddService() {}
 
 const ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor* EchoAddService::descriptor() {
@@ -1393,6 +1932,14 @@ void EchoAddService::queryAdd(::PROTOBUF_NAMESPACE_ID::RpcController* controller
   done->Run();
 }
 
+void EchoAddService::querySub(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                         const ::sylar::tinyrpc::SubRequest*,
+                         ::sylar::tinyrpc::SubResponse*,
+                         ::google::protobuf::Closure* done) {
+  controller->SetFailed("Method querySub() not implemented.");
+  done->Run();
+}
+
 void EchoAddService::CallMethod(const ::PROTOBUF_NAMESPACE_ID::MethodDescriptor* method,
                              ::PROTOBUF_NAMESPACE_ID::RpcController* controller,
                              const ::PROTOBUF_NAMESPACE_ID::Message* request,
@@ -1416,6 +1963,14 @@ void EchoAddService::CallMethod(const ::PROTOBUF_NAMESPACE_ID::MethodDescriptor*
                  response),
              done);
       break;
+    case 2:
+      querySub(controller,
+             ::PROTOBUF_NAMESPACE_ID::internal::DownCast<const ::sylar::tinyrpc::SubRequest*>(
+                 request),
+             ::PROTOBUF_NAMESPACE_ID::internal::DownCast<::sylar::tinyrpc::SubResponse*>(
+                 response),
+             done);
+      break;
     default:
       GOOGLE_LOG(FATAL) << "Bad method index; this should never happen.";
       break;
@@ -1430,6 +1985,8 @@ const ::PROTOBUF_NAMESPACE_ID::Message& EchoAddService::GetRequestPrototype(
       return ::sylar::tinyrpc::EchoRequest::default_instance();
     case 1:
       return ::sylar::tinyrpc::AddRequest::default_instance();
+    case 2:
+      return ::sylar::tinyrpc::SubRequest::default_instance();
     default:
       GOOGLE_LOG(FATAL) << "Bad method index; this should never happen.";
       return *::PROTOBUF_NAMESPACE_ID::MessageFactory::generated_factory()
@@ -1445,6 +2002,8 @@ const ::PROTOBUF_NAMESPACE_ID::Message& EchoAddService::GetResponsePrototype(
       return ::sylar::tinyrpc::EchoResponse::default_instance();
     case 1:
       return ::sylar::tinyrpc::AddResponse::default_instance();
+    case 2:
+      return ::sylar::tinyrpc::SubResponse::default_instance();
     default:
       GOOGLE_LOG(FATAL) << "Bad method index; this should never happen.";
       return *::PROTOBUF_NAMESPACE_ID::MessageFactory::generated_factory()
@@ -1477,6 +2036,13 @@ void EchoAddService_Stub::queryAdd(::PROTOBUF_NAMESPACE_ID::RpcController* contr
   channel_->CallMethod(descriptor()->method(1),
                        controller, request, response, done);
 }
+void EchoAddService_Stub::querySub(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                              const ::sylar::tinyrpc::SubRequest* request,
+                              ::sylar::tinyrpc::SubResponse* response,
+                              ::google::protobuf::Closure* done) {
+  channel_->CallMethod(descriptor()->method(2),
+                       controller, request, response, done);
+}
 
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace tinyrpc
@@ -1496,6 +2062,12 @@ template<> PROTOBUF_NOINLINE ::sylar::tinyrpc::AddRequest* Arena::CreateMaybeMes
 }
 template<> PROTOBUF_NOINLINE ::sylar::tinyrpc::AddResponse* Arena::CreateMaybeMessage< ::sylar::tinyrpc::AddResponse >(Arena* arena) {
   return Arena::CreateMessageInternal< ::sylar::tinyrpc::AddResponse >(arena);
+}
+template<> PROTOBUF_NOINLINE ::sylar::tinyrpc::SubRequest* Arena::CreateMaybeMessage< ::sylar::tinyrpc::SubRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::sylar::tinyrpc::SubRequest >(arena);
+}
+template<> PROTOBUF_NOINLINE ::sylar::tinyrpc::SubResponse* Arena::CreateMaybeMessage< ::sylar::tinyrpc::SubResponse >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::sylar::tinyrpc::SubResponse >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

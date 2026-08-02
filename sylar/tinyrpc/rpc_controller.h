@@ -5,10 +5,8 @@
 #include <memory>
 #include <string>
 
-namespace sylar 
-{
-namespace tinyrpc
-{
+namespace sylar {
+namespace tinyrpc{
 //protobuf RPC调用的“控制通道”，不承载业务数据，而负责描述 RPC 调用状态（失败、取消、错误信息、超时等）。
 class TinyRpcController : public google::protobuf::RpcController {
 public:

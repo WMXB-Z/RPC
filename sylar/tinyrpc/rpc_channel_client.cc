@@ -24,7 +24,7 @@ void RpcChannelClient::CallMethod(const google::protobuf::MethodDescriptor *meth
 
     // 进行TCP传输，并获得http response响应报文
     // todo:这里加载 服务器配置的方式需要修改
-    sylar::Address::ptr addr = sylar::Address::LookupAnyIPAddress("127.0.0.0:8008");
+    sylar::Address::ptr addr = sylar::Address::LookupAnyIPAddress("127.0.0.1:8008");
     if (!addr) {
         controller->SetFailed("get addr error");
         return;
