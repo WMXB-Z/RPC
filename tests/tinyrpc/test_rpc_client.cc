@@ -3,8 +3,10 @@
 #include "./echo_add.poto.pb.h"
 #include "sylar/tinyrpc/rpc_channel_client.h"
 #include "sylar/tinyrpc/rpc_controller.h"
+
 int main(){
-    // todo: 系统的初始化操作Init(argc, argv);这一部分放在服务器启动中
+    // todo: 系统的初始化操作Init(argc, argv)
+    
     // 创建远程rpc方法代理类
     sylar::tinyrpc::EchoAddService_Stub stub(new sylar::tinyrpc::RpcChannelClient() );
 
@@ -16,11 +18,11 @@ int main(){
     // 调用业务
     stub.queryEcho(&controller, &echo_request, &echo_response, nullptr);
     // 调用完成
-    if (0 == echo_response.result().errcode()){
-        std::cout << "rpc login response : " << echo_response.success() << std::endl;
+    if (!controller.Failed()){
+        std::cout << "rpc process is successful " << std::endl;
         std::cout << "the reply is: " << echo_response.mess() << std::endl;
     }else{
-        std::cout << "rpc login response error : " << echo_response.result().errmsg() << std::endl;
+        std::cout << "rpc process error : " << controller.ErrorText() << std::endl;
     }
 
     // （2）测试add服务
@@ -31,11 +33,11 @@ int main(){
 
     controller.Reset();
     stub.queryAdd(&controller, &add_request, &add_response, nullptr);
-    if (0 == add_response.result().errcode()){
-        std::cout << "rpc register response : " << add_response.success() << std::endl;
+    if (!controller.Failed()){
+        std::cout << "rpc process is successful" << std::endl;
         std::cout << "Sum is :" << add_response.sum() << std::endl;
     }else{
-        std::cout << "rpc register response error : " << add_response.result().errmsg() << std::endl;
+        std::cout << "rpc process error : " << controller.ErrorText() << std::endl;
     }
 
     return 0;

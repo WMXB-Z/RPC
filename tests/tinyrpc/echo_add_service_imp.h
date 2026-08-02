@@ -1,10 +1,12 @@
 #ifndef ECHO_ADD_SERVICEIMP
 #define ECHO_ADD_SERVICEIMP
+#include <memory>
 #include "echo_add.poto.pb.h"
 namespace sylar{
 namespace tinyrpc{
 class EchoAddServiceImp : public EchoAddService{
-
+public:
+    typedef std::shared_ptr<EchoAddServiceImp> ptr ;
     std::string echo(){
         std::cout << "queryEcho RPC is successful";
         return "hello this is service!";
@@ -22,8 +24,10 @@ class EchoAddServiceImp : public EchoAddService{
                     ::google::protobuf::Closure* done) override{
 
         std::string response_str = echo();
+        sylar::tinyrpc::ResultCode* code = response->mutable_result();
+        code->set_errcode(0);
+        code->set_errmsg("");
         response->set_mess(response_str);
-        response->set_success(true);
 
         if(done){
             done->Run();
@@ -39,9 +43,10 @@ class EchoAddServiceImp : public EchoAddService{
         int32_t a = request->a();
         int32_t b = request->b();
         int32_t sum = add(a, b);
-        
+        sylar::tinyrpc::ResultCode* code = response->mutable_result();
+        code->set_errcode(0);
+        code->set_errmsg("");
         response->set_sum(sum);
-        response->set_success(true);
         if(done){
             done->Run();
         }

@@ -4,9 +4,9 @@
 #include "tests/tinyrpc/echo_add.poto.pb.h"
 namespace sylar{
 namespace tinyrpc{
-    RpcFunctionServlet::RpcFunctionServlet(callback cb) : Servlet("FunctionServlet") ,m_cb(cb){}
+    RpcFuncServlet::RpcFuncServlet(callback cb) : Servlet("RpcFuncServlet") ,m_cb(cb){}
 
-    int32_t RpcFunctionServlet::handle(http::HttpRequest::ptr http_res
+    int32_t RpcFuncServlet::handle(http::HttpRequest::ptr http_res
                    , http::HttpResponse::ptr http_rep
                    , http::HttpSession::ptr session) {
 
@@ -29,7 +29,7 @@ namespace tinyrpc{
         }
         // 根据message中的处理调用m_cb（这里本质上因该是一个serverimpl的callMethod）
         // callMethod(method, nullptr, request, response, nullptr);
-        int res = m_cb(method, nullptr, request, response, nullptr);
+        m_cb(method, nullptr, request, response, nullptr);
 
         // 将执行结果放入http_res中
         std::string reslut;
@@ -43,7 +43,7 @@ namespace tinyrpc{
 
         delete request;
         delete response;
-        return res == 0;
+        return true;
     }
 }
 }

@@ -162,7 +162,7 @@ public:
     void addServlet(const std::string& uri, Servlet::ptr slt);
 
     /**
-     * @brief 添加servlet（间接调用addServlet(const std::string& uri, Servlet::ptr slt)）
+     * @brief 添加servlet
      * @param[in] uri uri
      * @param[in] cb FunctionServlet回调函数
      */

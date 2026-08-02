@@ -518,7 +518,6 @@ class EchoResponse PROTOBUF_FINAL :
   enum : int {
     kMessFieldNumber = 1,
     kResultFieldNumber = 2,
-    kSuccessFieldNumber = 3,
   };
   // bytes mess = 1;
   void clear_mess();
@@ -563,15 +562,6 @@ class EchoResponse PROTOBUF_FINAL :
       ::sylar::tinyrpc::ResultCode* result);
   ::sylar::tinyrpc::ResultCode* unsafe_arena_release_result();
 
-  // bool success = 3;
-  void clear_success();
-  bool success() const;
-  void set_success(bool value);
-  private:
-  bool _internal_success() const;
-  void _internal_set_success(bool value);
-  public:
-
   // @@protoc_insertion_point(class_scope:sylar.tinyrpc.EchoResponse)
  private:
   class _Internal;
@@ -581,7 +571,6 @@ class EchoResponse PROTOBUF_FINAL :
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr mess_;
   ::sylar::tinyrpc::ResultCode* result_;
-  bool success_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_echo_5fadd_2epoto;
 };
@@ -850,7 +839,6 @@ class AddResponse PROTOBUF_FINAL :
   enum : int {
     kResultFieldNumber = 2,
     kSumFieldNumber = 1,
-    kSuccessFieldNumber = 3,
   };
   // .sylar.tinyrpc.ResultCode result = 2;
   bool has_result() const;
@@ -879,15 +867,6 @@ class AddResponse PROTOBUF_FINAL :
   void _internal_set_sum(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
-  // bool success = 3;
-  void clear_success();
-  bool success() const;
-  void set_success(bool value);
-  private:
-  bool _internal_success() const;
-  void _internal_set_success(bool value);
-  public:
-
   // @@protoc_insertion_point(class_scope:sylar.tinyrpc.AddResponse)
  private:
   class _Internal;
@@ -897,7 +876,6 @@ class AddResponse PROTOBUF_FINAL :
   typedef void DestructorSkippable_;
   ::sylar::tinyrpc::ResultCode* result_;
   ::PROTOBUF_NAMESPACE_ID::int32 sum_;
-  bool success_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_echo_5fadd_2epoto;
 };
@@ -1331,26 +1309,6 @@ inline void EchoResponse::set_allocated_result(::sylar::tinyrpc::ResultCode* res
   // @@protoc_insertion_point(field_set_allocated:sylar.tinyrpc.EchoResponse.result)
 }
 
-// bool success = 3;
-inline void EchoResponse::clear_success() {
-  success_ = false;
-}
-inline bool EchoResponse::_internal_success() const {
-  return success_;
-}
-inline bool EchoResponse::success() const {
-  // @@protoc_insertion_point(field_get:sylar.tinyrpc.EchoResponse.success)
-  return _internal_success();
-}
-inline void EchoResponse::_internal_set_success(bool value) {
-  
-  success_ = value;
-}
-inline void EchoResponse::set_success(bool value) {
-  _internal_set_success(value);
-  // @@protoc_insertion_point(field_set:sylar.tinyrpc.EchoResponse.success)
-}
-
 // -------------------------------------------------------------------
 
 // AddRequest
@@ -1498,26 +1456,6 @@ inline void AddResponse::set_allocated_result(::sylar::tinyrpc::ResultCode* resu
   }
   result_ = result;
   // @@protoc_insertion_point(field_set_allocated:sylar.tinyrpc.AddResponse.result)
-}
-
-// bool success = 3;
-inline void AddResponse::clear_success() {
-  success_ = false;
-}
-inline bool AddResponse::_internal_success() const {
-  return success_;
-}
-inline bool AddResponse::success() const {
-  // @@protoc_insertion_point(field_get:sylar.tinyrpc.AddResponse.success)
-  return _internal_success();
-}
-inline void AddResponse::_internal_set_success(bool value) {
-  
-  success_ = value;
-}
-inline void AddResponse::set_success(bool value) {
-  _internal_set_success(value);
-  // @@protoc_insertion_point(field_set:sylar.tinyrpc.AddResponse.success)
 }
 
 #ifdef __GNUC__

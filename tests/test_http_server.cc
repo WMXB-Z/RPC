@@ -6,6 +6,7 @@
 
 static sylar::Logger::ptr g_logger = SYLAR_LOG_ROOT();
 
+// 将可变参数列表展开为一个string类型
 #define XX(...) #__VA_ARGS__
 
 sylar::IOManager::ptr worker;

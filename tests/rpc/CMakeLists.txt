@@ -1,3 +1,6 @@
+# 可执行文件输出到 bin/rpc，与 tests/rpc 目录结构保持一致
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin/rpc)
+
 include_directories(${PROJECT_SOURCE_DIR}/sylar)
 set(LISTCALLER calluserservice.cc user.pb.cc)
 set(LISTPROVIDER userservice.cc user.pb.cc)

@@ -76,6 +76,9 @@ set(LIB_SRC
     sylar/rpc/rpcapplication.cc
     sylar/rpc/zookeeperutil.cc
     sylar/rpc/rpcprovider.cc
+    sylar/tinyrpc/rpc_channel_client.cc
+    sylar/tinyrpc/rpc_connection.cc
+    sylar/tinyrpc/rpc_func_servlet.cc
 )
 
 # 创建动态库
@@ -133,6 +136,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 # rpc 调用方/提供方示例（caller、provider）
 add_subdirectory(${PROJECT_SOURCE_DIR}/tests/rpc)
+add_subdirectory(${PROJECT_SOURCE_DIR}/tests/tinyrpc)
 
 # ==================================install=================================
 # 设置安装前缀

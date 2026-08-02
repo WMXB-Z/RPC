@@ -1,6 +1,5 @@
 #include "rpc_connection.h"
 #include "sylar/http/http_connection.h"
-#include "sylar/tinyrpc/rpc_header.pb.h"
 
 namespace sylar {
 namespace tinyrpc {
@@ -20,7 +19,7 @@ bool RpcConnection::putToHttpRequest(const google::protobuf::MethodDescriptor *m
     }
 
     http_req->setMethod(sylar::http::HttpMethod::POST);
-    http_req->setPath(service_desc->name() + '/' + method->name());
+    http_req->setPath('/' + service_desc->name() + '/' + method->name());
     http_req->setVersion(0x11);
     http_req->setHeader("service_name", service_desc->name());
     http_req->setHeader("method_name", method->name());
@@ -39,6 +38,7 @@ bool RpcConnection::getFromHttpResponse(http::HttpResponse::ptr http_res,
     if (!response->ParseFromString(param_str)) {
         return false;
     }
+    
     return true;
 }
 

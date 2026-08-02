@@ -14,7 +14,6 @@ message EchoRequest{
 message EchoResponse{
     bytes mess = 1;
     ResultCode result = 2;
-    bool success = 3;
 }
 
 message AddRequest{
@@ -25,7 +24,6 @@ message AddRequest{
 message AddResponse{
     int32 sum = 1;
     ResultCode result = 2;
-    bool success = 3;
 }
 
 service EchoAddService {

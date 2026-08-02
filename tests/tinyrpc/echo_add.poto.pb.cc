@@ -136,7 +136,6 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_echo_5fadd_2epoto::offsets[] P
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::sylar::tinyrpc::EchoResponse, mess_),
   PROTOBUF_FIELD_OFFSET(::sylar::tinyrpc::EchoResponse, result_),
-  PROTOBUF_FIELD_OFFSET(::sylar::tinyrpc::EchoResponse, success_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::sylar::tinyrpc::AddRequest, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -151,14 +150,13 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_echo_5fadd_2epoto::offsets[] P
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::sylar::tinyrpc::AddResponse, sum_),
   PROTOBUF_FIELD_OFFSET(::sylar::tinyrpc::AddResponse, result_),
-  PROTOBUF_FIELD_OFFSET(::sylar::tinyrpc::AddResponse, success_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::sylar::tinyrpc::ResultCode)},
   { 7, -1, sizeof(::sylar::tinyrpc::EchoRequest)},
   { 13, -1, sizeof(::sylar::tinyrpc::EchoResponse)},
-  { 21, -1, sizeof(::sylar::tinyrpc::AddRequest)},
-  { 28, -1, sizeof(::sylar::tinyrpc::AddResponse)},
+  { 20, -1, sizeof(::sylar::tinyrpc::AddRequest)},
+  { 27, -1, sizeof(::sylar::tinyrpc::AddResponse)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -172,17 +170,16 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 const char descriptor_table_protodef_echo_5fadd_2epoto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\recho_add.poto\022\rsylar.tinyrpc\"-\n\nResult"
   "Code\022\017\n\007errcode\030\001 \001(\005\022\016\n\006errmsg\030\002 \001(\014\"\033\n"
-  "\013EchoRequest\022\014\n\004mess\030\001 \001(\014\"X\n\014EchoRespon"
+  "\013EchoRequest\022\014\n\004mess\030\001 \001(\014\"G\n\014EchoRespon"
   "se\022\014\n\004mess\030\001 \001(\014\022)\n\006result\030\002 \001(\0132\031.sylar"
-  ".tinyrpc.ResultCode\022\017\n\007success\030\003 \001(\010\"\"\n\n"
-  "AddRequest\022\t\n\001a\030\001 \001(\005\022\t\n\001b\030\002 \001(\005\"V\n\013AddR"
-  "esponse\022\013\n\003sum\030\001 \001(\005\022)\n\006result\030\002 \001(\0132\031.s"
-  "ylar.tinyrpc.ResultCode\022\017\n\007success\030\003 \001(\010"
-  "2\231\001\n\016EchoAddService\022D\n\tqueryEcho\022\032.sylar"
-  ".tinyrpc.EchoRequest\032\033.sylar.tinyrpc.Ech"
-  "oResponse\022A\n\010queryAdd\022\031.sylar.tinyrpc.Ad"
-  "dRequest\032\032.sylar.tinyrpc.AddResponseB\003\200\001"
-  "\001b\006proto3"
+  ".tinyrpc.ResultCode\"\"\n\nAddRequest\022\t\n\001a\030\001"
+  " \001(\005\022\t\n\001b\030\002 \001(\005\"E\n\013AddResponse\022\013\n\003sum\030\001 "
+  "\001(\005\022)\n\006result\030\002 \001(\0132\031.sylar.tinyrpc.Resu"
+  "ltCode2\231\001\n\016EchoAddService\022D\n\tqueryEcho\022\032"
+  ".sylar.tinyrpc.EchoRequest\032\033.sylar.tinyr"
+  "pc.EchoResponse\022A\n\010queryAdd\022\031.sylar.tiny"
+  "rpc.AddRequest\032\032.sylar.tinyrpc.AddRespon"
+  "seB\003\200\001\001b\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_echo_5fadd_2epoto_deps[1] = {
 };
@@ -195,7 +192,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_ech
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_echo_5fadd_2epoto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_echo_5fadd_2epoto = {
-  false, false, descriptor_table_protodef_echo_5fadd_2epoto, "echo_add.poto", 489,
+  false, false, descriptor_table_protodef_echo_5fadd_2epoto, "echo_add.poto", 455,
   &descriptor_table_echo_5fadd_2epoto_once, descriptor_table_echo_5fadd_2epoto_sccs, descriptor_table_echo_5fadd_2epoto_deps, 5, 0,
   schemas, file_default_instances, TableStruct_echo_5fadd_2epoto::offsets,
   file_level_metadata_echo_5fadd_2epoto, 5, file_level_enum_descriptors_echo_5fadd_2epoto, file_level_service_descriptors_echo_5fadd_2epoto,
@@ -675,16 +672,13 @@ EchoResponse::EchoResponse(const EchoResponse& from)
   } else {
     result_ = nullptr;
   }
-  success_ = from.success_;
   // @@protoc_insertion_point(copy_constructor:sylar.tinyrpc.EchoResponse)
 }
 
 void EchoResponse::SharedCtor() {
   ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_EchoResponse_echo_5fadd_2epoto.base);
   mess_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  ::memset(&result_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&success_) -
-      reinterpret_cast<char*>(&result_)) + sizeof(success_));
+  result_ = nullptr;
 }
 
 EchoResponse::~EchoResponse() {
@@ -725,7 +719,6 @@ void EchoResponse::Clear() {
     delete result_;
   }
   result_ = nullptr;
-  success_ = false;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -749,13 +742,6 @@ const char* EchoResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_I
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
           ptr = ctx->ParseMessage(_internal_mutable_result(), ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // bool success = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
-          success_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -801,12 +787,6 @@ failure:
         2, _Internal::result(this), target, stream);
   }
 
-  // bool success = 3;
-  if (this->success() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(3, this->_internal_success(), target);
-  }
-
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -835,11 +815,6 @@ size_t EchoResponse::ByteSizeLong() const {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
         *result_);
-  }
-
-  // bool success = 3;
-  if (this->success() != 0) {
-    total_size += 1 + 1;
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -879,9 +854,6 @@ void EchoResponse::MergeFrom(const EchoResponse& from) {
   if (from.has_result()) {
     _internal_mutable_result()->::sylar::tinyrpc::ResultCode::MergeFrom(from._internal_result());
   }
-  if (from.success() != 0) {
-    _internal_set_success(from._internal_success());
-  }
 }
 
 void EchoResponse::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
@@ -906,12 +878,7 @@ void EchoResponse::InternalSwap(EchoResponse* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   mess_.Swap(&other->mess_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(EchoResponse, success_)
-      + sizeof(EchoResponse::success_)
-      - PROTOBUF_FIELD_OFFSET(EchoResponse, result_)>(
-          reinterpret_cast<char*>(&result_),
-          reinterpret_cast<char*>(&other->result_));
+  swap(result_, other->result_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata EchoResponse::GetMetadata() const {
@@ -1179,17 +1146,15 @@ AddResponse::AddResponse(const AddResponse& from)
   } else {
     result_ = nullptr;
   }
-  ::memcpy(&sum_, &from.sum_,
-    static_cast<size_t>(reinterpret_cast<char*>(&success_) -
-    reinterpret_cast<char*>(&sum_)) + sizeof(success_));
+  sum_ = from.sum_;
   // @@protoc_insertion_point(copy_constructor:sylar.tinyrpc.AddResponse)
 }
 
 void AddResponse::SharedCtor() {
   ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_AddResponse_echo_5fadd_2epoto.base);
   ::memset(&result_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&success_) -
-      reinterpret_cast<char*>(&result_)) + sizeof(success_));
+      reinterpret_cast<char*>(&sum_) -
+      reinterpret_cast<char*>(&result_)) + sizeof(sum_));
 }
 
 AddResponse::~AddResponse() {
@@ -1228,9 +1193,7 @@ void AddResponse::Clear() {
     delete result_;
   }
   result_ = nullptr;
-  ::memset(&sum_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&success_) -
-      reinterpret_cast<char*>(&sum_)) + sizeof(success_));
+  sum_ = 0;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1253,13 +1216,6 @@ const char* AddResponse::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
           ptr = ctx->ParseMessage(_internal_mutable_result(), ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // bool success = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
-          success_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -1305,12 +1261,6 @@ failure:
         2, _Internal::result(this), target, stream);
   }
 
-  // bool success = 3;
-  if (this->success() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteBoolToArray(3, this->_internal_success(), target);
-  }
-
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -1339,11 +1289,6 @@ size_t AddResponse::ByteSizeLong() const {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
         this->_internal_sum());
-  }
-
-  // bool success = 3;
-  if (this->success() != 0) {
-    total_size += 1 + 1;
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1383,9 +1328,6 @@ void AddResponse::MergeFrom(const AddResponse& from) {
   if (from.sum() != 0) {
     _internal_set_sum(from._internal_sum());
   }
-  if (from.success() != 0) {
-    _internal_set_success(from._internal_success());
-  }
 }
 
 void AddResponse::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
@@ -1410,8 +1352,8 @@ void AddResponse::InternalSwap(AddResponse* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(AddResponse, success_)
-      + sizeof(AddResponse::success_)
+      PROTOBUF_FIELD_OFFSET(AddResponse, sum_)
+      + sizeof(AddResponse::sum_)
       - PROTOBUF_FIELD_OFFSET(AddResponse, result_)>(
           reinterpret_cast<char*>(&result_),
           reinterpret_cast<char*>(&other->result_));
