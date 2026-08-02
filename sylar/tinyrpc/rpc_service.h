@@ -1,0 +1,21 @@
+#ifndef RPC_SERVICE
+#define RPC_SERVICE
+
+#include <memory>
+#include "sylar/http/http_server.h"
+#include "sylar/iomanager.h"
+namespace sylar{
+namespace tinyrpc{
+// RpcService基本就是复用HttpServer的提供的接口功能即可
+class RpcService : public http::HttpServer{
+public:
+    typedef std::shared_ptr<RpcService> ptr;
+    RpcService(bool keepalive = false
+               ,sylar::IOManager* worker = sylar::IOManager::GetThis()
+               ,sylar::IOManager* io_worker = sylar::IOManager::GetThis()
+               ,sylar::IOManager* accept_worker = sylar::IOManager::GetThis())
+              : http::HttpServer(keepalive,worker,io_worker,accept_worker){ }
+};
+}
+}
+#endif

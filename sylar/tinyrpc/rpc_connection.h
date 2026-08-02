@@ -1,5 +1,5 @@
-# ifndef __TINY_RPC_CONNECTION_H__
-# define __TINY_RPC_CONNECTION_H__
+# ifndef RPC_CONNECTION_H
+# define RPC_CONNECTION_H
 
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/service.h>
@@ -26,15 +26,13 @@ public:
      * @brief 将待发送的数据，封装成一个HttpRequest类
      */
     static bool putToHttpRequest(const google::protobuf::MethodDescriptor *method,
-                google::protobuf::RpcController *controller, 
-                const google::protobuf::Message *request,
-                http::HttpRequest::ptr http_req);
+                                const google::protobuf::Message *request,
+                                http::HttpRequest::ptr http_req);
 
     /**
      * @brief 将收到的HttpResponse，拆解得到需要的数据
      */
     static bool getFromHttpResponse(http::HttpResponse::ptr http_response,
-                                    google::protobuf::RpcController *controller,
                                     google::protobuf::Message *response);
 
 };

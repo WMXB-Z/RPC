@@ -1,0 +1,34 @@
+syntax = "proto3";
+option cc_generic_services = true;
+package  sylar.tinyrpc;
+
+message ResultCode{
+    int32 errcode = 1;
+    bytes errmsg = 2;
+}
+
+message EchoRequest{
+    bytes mess = 1;
+}
+
+message EchoResponse{
+    bytes mess = 1;
+    ResultCode result = 2;
+    bool success = 3;
+}
+
+message AddRequest{
+    int32 a = 1;
+    int32 b = 2;
+}
+
+message AddResponse{
+    int32 sum = 1;
+    ResultCode result = 2;
+    bool success = 3;
+}
+
+service EchoAddService {
+  rpc queryEcho(EchoRequest) returns (EchoResponse);
+  rpc queryAdd(AddRequest) returns (AddResponse);
+}

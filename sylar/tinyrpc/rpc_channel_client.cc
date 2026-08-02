@@ -17,11 +17,14 @@ void RpcChannelClient::CallMethod(const google::protobuf::MethodDescriptor *meth
     // ====================================================
     // 创建http request报文
     http::HttpRequest::ptr http_req(new http::HttpRequest);
-    RpcConnection::putToHttpRequest(method, controller, request, http_req);
+    if(!RpcConnection::putToHttpRequest(method, request, http_req)){
+        controller->SetFailed("request message SeralizeToString failed!");
+        return;
+    }
 
     // 进行TCP传输，并获得http response响应报文
     // todo:这里加载 配置的方式需要修改
-    sylar::Address::ptr addr = sylar::Address::LookupAnyIPAddress("服务器IP:服务port");
+    sylar::Address::ptr addr = sylar::Address::LookupAnyIPAddress("127.0.0.0:8008");
     if (!addr) {
         controller->SetFailed("get addr error");
         return;
@@ -52,7 +55,10 @@ void RpcChannelClient::CallMethod(const google::protobuf::MethodDescriptor *meth
         return;
     }
     // 根据http response报文得到 response
-    RpcConnection::getFromHttpResponse(http_res, controller, response);
+    if(!RpcConnection::getFromHttpResponse(http_res, response)){
+        controller->SetFailed("response parse from string failed!!");
+        return;
+    }
 
     // 如果设置了回调函数，则执行
     // if (done) {
