@@ -134,7 +134,7 @@ public:
                             , const std::string& body = "");
 
     /**
-     * @brief 发送HTTP请求
+     * @brief 发送HTTP请求(底层调用支持Uri::ptr uri的DoRequest接口)
      * @param[in] method 请求类型
      * @param[in] uri 请求的url
      * @param[in] timeout_ms 超时时间(毫秒)
@@ -149,7 +149,7 @@ public:
                             , const std::string& body = "");
 
     /**
-     * @brief 发送HTTP请求
+     * @brief 发送HTTP请求（构造好Request后，调用DoRequest(HttpRequest::ptr req, Uri::ptr uri, uint64_t timeout_ms)）
      * @param[in] method 请求类型
      * @param[in] uri URI结构体
      * @param[in] timeout_ms 超时时间(毫秒)
@@ -164,7 +164,7 @@ public:
                             , const std::string& body = "");
 
     /**
-     * @brief 发送HTTP请求
+     * @brief 发送HTTP请求（将sendRequest，将消息通过TCP传输）
      * @param[in] req 请求结构体
      * @param[in] uri URI结构体
      * @param[in] timeout_ms 超时时间(毫秒)
@@ -179,7 +179,7 @@ public:
      * @param[in] sock Socket类
      * @param[in] owner 是否掌握所有权
      */
-    HttpConnection(Socket::ptr sock, bool owner = true);
+    HttpConnection(Socket::ptr sock, bool owner = true, bool keepalive = true);
 
     /**
      * @brief 析构函数
@@ -197,6 +197,8 @@ public:
      */
     int sendRequest(HttpRequest::ptr req);
 
+    bool isKeepAlive() const {return m_keepalive;}
+
 private:
     /// 创建时间
     uint64_t m_createTime = 0;
@@ -208,6 +210,8 @@ private:
     uint64_t m_buff_size;
     /// 缓冲区中尚未被消费的字节数
     int m_offset;
+    /// 连接是否是长连接
+    bool m_keepalive;
 };
 
 class HttpConnectionPool {

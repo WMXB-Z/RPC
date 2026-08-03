@@ -1,8 +1,6 @@
 /**
  * @file util.cpp
  * @brief util函数实现
- * @version 0.1
- * @date 2021-06-08
  */
 
 #include <unistd.h>

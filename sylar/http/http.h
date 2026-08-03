@@ -138,7 +138,7 @@ public:
      * @param[in] version 版本
      * @param[in] close 是否keepalive
      */
-    HttpRequest(uint8_t version = 0x11, bool close = true);
+    HttpRequest(uint8_t version = 0x11, bool close = false);
 
     /**
      * @brief 从HTTP请求构造HTTP响应
@@ -512,7 +512,7 @@ public:
      * @param[in] version 版本
      * @param[in] close 是否自动关闭
      */
-    HttpResponse(uint8_t version = 0x11, bool close = true);
+    HttpResponse(uint8_t version = 0x11, bool close = false);
 
     /**
      * @brief 返回响应状态

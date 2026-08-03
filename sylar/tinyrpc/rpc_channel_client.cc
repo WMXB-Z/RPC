@@ -15,13 +15,6 @@ void RpcChannelClient::CallMethod(const google::protobuf::MethodDescriptor *meth
         return;
     }
 
-    // 创建http request报文
-    http::HttpRequest::ptr http_req(new http::HttpRequest);
-    if(!RpcConnection::putToHttpRequest(method, request, http_req)){
-        controller->SetFailed("request message SeralizeToString failed!");
-        return;
-    }
-
     // 进行TCP传输，并获得http response响应报文
     // todo:这里加载 服务器配置的方式需要修改
     sylar::Address::ptr addr = sylar::Address::LookupAnyIPAddress("127.0.0.1:8008");
@@ -40,11 +33,20 @@ void RpcChannelClient::CallMethod(const google::protobuf::MethodDescriptor *meth
 
     // 基于TCP进行服务请求
     // todo:每次都新建TCP连接，性能较差。后续可参考项目里的 HttpConnectionPool 做连接复用。
+    
+    // 根据request创建http request报文
+    http::HttpRequest::ptr http_req(new http::HttpRequest);
+    if(!RpcConnection::putToHttpRequest(method, request, http_req)){
+        controller->SetFailed("request message SeralizeToString failed!");
+        return;
+    }
+    // 发送http request报文
     http::HttpConnection::ptr conn(new http::HttpConnection(sock));
     if(conn->sendRequest(http_req) <= 0){
         controller->SetFailed("send request error!");
         return;
     }
+    // 接收http Response报文
     http::HttpResponse::ptr http_res = conn->recvResponse();
     if(!http_res){
         controller->SetFailed("recv response is nullptr!");

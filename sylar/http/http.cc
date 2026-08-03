@@ -172,7 +172,7 @@ std::ostream &HttpRequest::dump(std::ostream &os) const {
        << "."
        << ((uint32_t)(m_version & 0x0F))
        << "\r\n";
-    if (!m_websocket) {
+    if (!m_websocket) {//http requset-->string时，会根据m_close的设置，自动添加connection设置
         os << "connection: " << (m_close ? "close" : "keep-alive") << "\r\n";
     }
     for (auto &i : m_headers) {
@@ -185,7 +185,7 @@ std::ostream &HttpRequest::dump(std::ostream &os) const {
         os << i.first << ": " << i.second << "\r\n";
     }
 
-    if (!m_body.empty()) {
+    if (!m_body.empty()) {//http requset-->string时，会根据body的size，自动添加content-length设置
         os << "content-length: " << m_body.size() << "\r\n\r\n"
            << m_body;
     } else {

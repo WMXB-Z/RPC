@@ -1,8 +1,6 @@
 /**
  * @file uri.cc
  * @brief URI封装实现，基于nodejs/http-parser
- * @version 0.1
- * @date 2021-11-14
  */
 
 #include "uri.h"

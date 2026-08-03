@@ -21,8 +21,8 @@ std::string HttpResult::toString() const {
     return ss.str();
 }
 
-HttpConnection::HttpConnection(Socket::ptr sock, bool owner)
-    :SocketStream(sock, owner) {
+HttpConnection::HttpConnection(Socket::ptr sock, bool owner, bool keepalive)
+    :SocketStream(sock, owner) , m_keepalive(keepalive){
     m_buff_size = HttpRequestParser::GetHttpRequestBufferSize();
     m_buffer.reset(new char[m_buff_size + 1], [](char *ptr) {
         delete[] ptr;
@@ -47,7 +47,7 @@ HttpResponse::ptr HttpConnection::recvResponse() {
         if (parser->isFinished()) {
             break;
         }
-        if (m_offset == (int)m_buff_size) {
+        if (m_offset == (int)m_buff_size) { //缓存区已经读满了
             close();
             return nullptr;
         }
@@ -132,21 +132,25 @@ HttpResult::ptr HttpConnection::DoRequest(HttpMethod method
     req->setQuery(uri->getQuery());
     req->setFragment(uri->getFragment());
     req->setMethod(method);
+    // req->setClose(!m_keepalive);静态方法无法访问非静态成员
     bool has_host = false;
+
+    // request前，应根据"connection"设置req的m_close属性
     for(auto& i : headers) {
         if(strcasecmp(i.first.c_str(), "connection") == 0) {
             if(strcasecmp(i.second.c_str(), "keep-alive") == 0) {
                 req->setClose(false);
+            }else if(strcasecmp(i.second.c_str(), "close") == 0){
+                req->setClose(true);
             }
-            continue;
         }
-
         if(!has_host && strcasecmp(i.first.c_str(), "host") == 0) {
             has_host = !i.second.empty();
         }
-
+        //在toString时connection会根据m_close自定添加，但这里依然添加是为了让
         req->setHeader(i.first, i.second);
     }
+
     if(!has_host) {
         req->setHeader("Host", uri->getHost());
     }
@@ -175,6 +179,7 @@ HttpResult::ptr HttpConnection::DoRequest(HttpRequest::ptr req
     }
     sock->setRecvTimeout(timeout_ms);
     HttpConnection::ptr conn = std::make_shared<HttpConnection>(sock);
+
     int rt = conn->sendRequest(req);
     if(rt == 0) {
         return std::make_shared<HttpResult>((int)HttpResult::Error::SEND_CLOSE_BY_PEER
@@ -251,19 +256,23 @@ HttpConnection::ptr HttpConnectionPool::getConnection() {
             return nullptr;
         }
 
-        ptr = new HttpConnection(sock);
+        ptr = new HttpConnection(sock);// 池子里的连接默认长连接
         ++m_total;
     }
+
+    // 设置共享指针结束时的回调函数
     return HttpConnection::ptr(ptr, std::bind(&HttpConnectionPool::ReleasePtr
                                , std::placeholders::_1, this));
 
 }
 
 void HttpConnectionPool::ReleasePtr(HttpConnection* ptr, HttpConnectionPool* pool) {
-    ++ptr->m_request;
+    ++ptr->m_request;   //ptr对应的连接使用次数+1
     if(!ptr->isConnected()
             || ((ptr->m_createTime + pool->m_maxAliveTime) >= sylar::GetCurrentMS())
             || (ptr->m_request >= pool->m_maxRequest)) {
+        // todo: bug：ptr->isConnected()只能检查连接使用的本地socket是否已经关闭，无法检查本次TCP是否已经关闭！
+        // 短连接情况下，一次恢复后对端关闭，而本端却不知道（只有在recv一次，socket才会知晓），导致半关闭的连接放回pool池，影响下次工作
         delete ptr;
         --pool->m_total;
         return;
@@ -374,6 +383,12 @@ HttpResult::ptr HttpConnectionPool::doRequest(HttpRequest::ptr req
                 , nullptr, "pool host:" + m_host + " port:" + std::to_string(m_port));
     }
     sock->setRecvTimeout(timeout_ms);
+
+    // 根据conn自身的 keep-alive 自动设置请求的该req的 m_close（用户显式指定 Connection 头时则由用户设置决定）
+    if (req->getHeader("connection").empty()) {
+        req->setClose(!conn->isKeepAlive());
+    }
+
     int rt = conn->sendRequest(req);
     if(rt == 0) {
         return std::make_shared<HttpResult>((int)HttpResult::Error::SEND_CLOSE_BY_PEER
@@ -389,6 +404,12 @@ HttpResult::ptr HttpConnectionPool::doRequest(HttpRequest::ptr req
         return std::make_shared<HttpResult>((int)HttpResult::Error::TIMEOUT
                     , nullptr, "recv response timeout: " + sock->getRemoteAddress()->toString()
                     + " timeout_ms:" + std::to_string(timeout_ms));
+    }
+
+    // 服务端声明将关闭连接（connection: close）时，本地主动 将socket close，
+    // ReleasePtr 的 isConnected() 检查会判定不可复用并销毁，死连接不会回池
+    if (rsp->isClose()) {
+        conn->close();
     }
     return std::make_shared<HttpResult>((int)HttpResult::Error::OK, rsp, "ok");
 }

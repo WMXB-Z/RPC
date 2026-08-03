@@ -29,7 +29,7 @@ public:
      * @param[in] accept_worker 接收连接调度器（负责调度socket的连接任务）
      * 一种典型服务器架构：连接接入 → 网络IO → 业务处理 三层分离。把网络事件处理和业务处理隔离，避免一个慢请求拖垮整个网络线程。
      */ 
-    HttpServer(bool keepalive = false
+    HttpServer(bool keepalive = true
                ,sylar::IOManager* worker = sylar::IOManager::GetThis()
                ,sylar::IOManager* io_worker = sylar::IOManager::GetThis()
                ,sylar::IOManager* accept_worker = sylar::IOManager::GetThis());
