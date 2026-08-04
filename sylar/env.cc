@@ -120,10 +120,10 @@ std::string Env::getAbsolutePath(const std::string &path) const {
     if (path.empty()) {
         return "/";
     }
-    if (path[0] == '/') {
+    if (path[0] == '/') {//绝对地址直接返回
         return path;
     }
-    return m_cwd + path;
+    return m_cwd + path;//若是相对地址，则返回与当前执行文件所在目录拼接后路径
 }
 
 std::string Env::getAbsoluteWorkPath(const std::string& path) const {

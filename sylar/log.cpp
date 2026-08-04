@@ -407,7 +407,7 @@ std::string StdoutLogAppender::toYamlString() {
     MutexType::Lock lock(m_mutex);
     YAML::Node node;
     node["type"] = "StdoutLogAppender";
-    node["pattern"] = m_formatter->getPattern();
+    node["pattern"] = m_formatter ? m_formatter->getPattern() : m_defaultFormatter->getPattern();
     std::stringstream ss;
     ss << node;
     return ss.str();

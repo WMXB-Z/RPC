@@ -1,0 +1,6 @@
+rpc:
+  server_ip: 127.0.0.1
+  server_port: 8007
+  
+  bind_ip: 0.0.0.0
+  bind_port: 8007

@@ -9,7 +9,7 @@ static sylar::Logger::ptr g_logger = SYLAR_LOG_ROOT();
 
 void test_pool() {
     sylar::http::HttpConnectionPool::ptr pool(new sylar::http::HttpConnectionPool(
-        "www.midlane.top", "", 80, 10, 1000 * 30, 5));
+        "www.midlane.top", 80, "", 10, 1000 * 30, 5));
 
     sylar::IOManager::GetThis()->addTimer(
         1000, [pool]() {

@@ -3,10 +3,19 @@
 #include "./echo_add.poto.pb.h"
 #include "sylar/tinyrpc/rpc_channel_client.h"
 #include "sylar/tinyrpc/rpc_controller.h"
+#include "sylar/env.h"
+#include "sylar/config.h"
 
-int main(){
-    // todo: 系统的初始化操作Init(argc, argv)
-    
+int main(int argc, char** argv){
+    // 初始化环境并加载配置（conf/rpc.yml）
+    sylar::EnvMgr::GetInstance()->init(argc, argv);
+    // todo:这里设置为绝对路径不太好,但由于配置文件的查找默认是在当前工作目录下进行的，使用相对路径可能会找不到
+    sylar::EnvMgr::GetInstance()->add("c", "/home/sylar-from-suycx/conf");
+    // 配置文件中参数的加载方式是：先注册（明确变量类型、默认值、说明信息），再通过加载yaml文件中的参数覆盖设置值
+    sylar::Config::Lookup("rpc.server_ip", std::string("127.0.0.1"), "rpc server ip");
+    sylar::Config::Lookup("rpc.server_port", (int32_t)8008, "rpc server port");
+    sylar::Config::LoadFromConfDir(sylar::EnvMgr::GetInstance()->getConfigPath());
+
     // 创建远程rpc方法代理类
     sylar::tinyrpc::EchoAddService_Stub stub(new sylar::tinyrpc::RpcChannelClient() );
 

@@ -109,12 +109,11 @@ private:
     std::map<std::string, std::string> m_args;
     /// 存储帮助选项与描述
     std::vector<std::pair<std::string, std::string>> m_helps;
-
     /// 程序名，也就是argv[0]
     std::string m_program;
     /// 程序完整路径名，也就是/proc/$pid/exe软链接指定的路径 
     std::string m_exe;
-    /// 程序所在目录路径
+    /// 程序所在目录路径（执行文件所在的路径）
     std::string m_cwd;
 };
 

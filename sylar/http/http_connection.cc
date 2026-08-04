@@ -132,7 +132,6 @@ HttpResult::ptr HttpConnection::DoRequest(HttpMethod method
     req->setQuery(uri->getQuery());
     req->setFragment(uri->getFragment());
     req->setMethod(method);
-    // req->setClose(!m_keepalive);静态方法无法访问非静态成员
     bool has_host = false;
 
     // request前，应根据"connection"设置req的m_close属性
@@ -178,7 +177,13 @@ HttpResult::ptr HttpConnection::DoRequest(HttpRequest::ptr req
                 , nullptr, "connect fail: " + addr->toString());
     }
     sock->setRecvTimeout(timeout_ms);
-    HttpConnection::ptr conn = std::make_shared<HttpConnection>(sock);
+    HttpConnection::ptr conn = std::make_shared<HttpConnection>(sock);  
+
+    // todo：由于本方法是static,这里进行pool中相关的处理是不合理的！
+    // 根据conn自身的 keep-alive 自动设置请求的该req的 m_close（用户显式指定 Connection 头时则由用户设置决定）
+    // if (req->getHeader("connection").empty()) {
+    //     req->setClose(!conn->isKeepAlive());
+    // }
 
     int rt = conn->sendRequest(req);
     if(rt == 0) {
@@ -196,19 +201,26 @@ HttpResult::ptr HttpConnection::DoRequest(HttpRequest::ptr req
                     , nullptr, "recv response timeout: " + addr->toString()
                     + " timeout_ms:" + std::to_string(timeout_ms));
     }
+
+    // 服务端声明将关闭连接（connection: close）时，本地主动 将socket close，
+    // ReleasePtr 的 isConnected() 检查会判定不可复用并销毁，死连接不会回池
+    // if (rsp->isClose()) {
+    //     conn->close();
+    // }
+
     return std::make_shared<HttpResult>((int)HttpResult::Error::OK, rsp, "ok");
 }
 
 
 HttpConnectionPool::HttpConnectionPool(const std::string& host
-                                        ,const std::string& vhost
                                         ,uint32_t port
+                                        ,const std::string& vhost
                                         ,uint32_t max_size
                                         ,uint32_t max_alive_time
                                         ,uint32_t max_request)
     :m_host(host)
-    ,m_vhost(vhost)
     ,m_port(port)
+    ,m_vhost(vhost)
     ,m_maxSize(max_size)
     ,m_maxAliveTime(max_alive_time)
     ,m_maxRequest(max_request) {
@@ -268,10 +280,10 @@ HttpConnection::ptr HttpConnectionPool::getConnection() {
 
 void HttpConnectionPool::ReleasePtr(HttpConnection* ptr, HttpConnectionPool* pool) {
     ++ptr->m_request;   //ptr对应的连接使用次数+1
-    if(!ptr->isConnected()
+    if(!ptr->isConnected() || !ptr->isKeepAlive()
             || ((ptr->m_createTime + pool->m_maxAliveTime) >= sylar::GetCurrentMS())
             || (ptr->m_request >= pool->m_maxRequest)) {
-        // todo: bug：ptr->isConnected()只能检查连接使用的本地socket是否已经关闭，无法检查本次TCP是否已经关闭！
+        // ptr->isConnected()只能检查连接使用的本地socket是否已经关闭，无法检查本次TCP是否已经关闭！
         // 短连接情况下，一次恢复后对端关闭，而本端却不知道（只有在recv一次，socket才会知晓），导致半关闭的连接放回pool池，影响下次工作
         delete ptr;
         --pool->m_total;
@@ -331,20 +343,23 @@ HttpResult::ptr HttpConnectionPool::doRequest(HttpMethod method
     req->setMethod(method);
     // req->setClose(false);
     bool has_host = false;
+
+    // request前，应根据"connection"设置req的m_close属性
     for(auto& i : headers) {
         if(strcasecmp(i.first.c_str(), "connection") == 0) {
             if(strcasecmp(i.second.c_str(), "keep-alive") == 0) {
                 req->setClose(false);
+            }else if(strcasecmp(i.second.c_str(), "close") == 0){
+                req->setClose(true);
             }
-            continue;
         }
-
         if(!has_host && strcasecmp(i.first.c_str(), "host") == 0) {
             has_host = !i.second.empty();
         }
-
+        //在toString时connection会根据m_close自定添加，但这里依然添加是为了让
         req->setHeader(i.first, i.second);
     }
+
     if(!has_host) {
         if(m_vhost.empty()) {
             req->setHeader("Host", m_host);

@@ -1,8 +1,6 @@
 /**
  * @file test_config.cc
  * @brief 配置模块测试
- * @version 0.1
- * @date 2021-06-13
  */
 
 #include "sylar/sylar.h"

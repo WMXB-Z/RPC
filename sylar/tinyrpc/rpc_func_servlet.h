@@ -24,6 +24,8 @@ public:
      * @param[in] service 注册的 protobuf 服务（持有所有权，保证服务存活时间不短于 servlet）
      */
     RpcFuncServlet(std::shared_ptr<google::protobuf::Service> service);
+
+    
     virtual int32_t handle(http::HttpRequest::ptr request
                    , http::HttpResponse::ptr response
                    , http::HttpSession::ptr session) override;

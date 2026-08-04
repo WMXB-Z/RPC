@@ -22,3 +22,12 @@ add_executable(test_rpc_service
     ${PROJECT_SOURCE_DIR}/sylar/tinyrpc/rpc_connection.cc
 )
 target_link_libraries(test_rpc_service sylar protobuf yaml-cpp dl pthread)
+
+# 性能测试：先启动服务端 test_rpc_service，再运行 test_rpc_perf
+add_executable(test_rpc_perf
+    test_rpc_perf.cc
+    echo_add.poto.pb.cc
+    ${PROJECT_SOURCE_DIR}/sylar/tinyrpc/rpc_channel_client.cc
+    ${PROJECT_SOURCE_DIR}/sylar/tinyrpc/rpc_connection.cc
+)
+target_link_libraries(test_rpc_perf sylar protobuf yaml-cpp dl pthread)

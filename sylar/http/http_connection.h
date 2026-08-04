@@ -199,7 +199,7 @@ public:
 
     bool isKeepAlive() const {return m_keepalive;}
 
-private:
+protected:
     /// 创建时间
     uint64_t m_createTime = 0;
     /// 该连接已使用的次数，只在使用连接池的情况下有用
@@ -229,11 +229,11 @@ public:
      * @param[in] max_request 单个连接可复用的最大次数
      */
     HttpConnectionPool(const std::string& host
-                       ,const std::string& vhost
                        ,uint32_t port
-                       ,uint32_t max_size
-                       ,uint32_t max_alive_time
-                       ,uint32_t max_request);
+                       ,const std::string& vhost = ""
+                       ,uint32_t max_size = 30
+                       ,uint32_t max_alive_time = 1000*30
+                       ,uint32_t max_request = 5);
 
     /**
      * @brief 从请求池中获取一个连接
@@ -296,7 +296,7 @@ public:
                            , const std::string& body = "");
 
     /**
-     * @brief 发送HTTP请求
+     * @brief 发送HTTP请求(构造HttRequest，间接调用doRequest(HttpRequest::ptr req, uint64_t timeout_ms)接口)
      * @param[in] method 请求类型
      * @param[in] uri 请求的url
      * @param[in] timeout_ms 超时时间(毫秒)
@@ -311,7 +311,7 @@ public:
                             , const std::string& body = "");
 
     /**
-     * @brief 发送HTTP请求
+     * @brief 发送HTTP请求(会将uri转url,调用使用url的doRequest的接口)
      * @param[in] method 请求类型
      * @param[in] uri URI结构体
      * @param[in] timeout_ms 超时时间(毫秒)
@@ -325,24 +325,25 @@ public:
                             , const std::map<std::string, std::string>& headers = {}
                             , const std::string& body = "");
 
+            
     /**
-     * @brief 发送HTTP请求
+     * @brief 发送HTTP请求（真正的发送和接受操作）
      * @param[in] req 请求结构体
      * @param[in] timeout_ms 超时时间(毫秒)
      * @return 返回HTTP结果结构体
      */
     HttpResult::ptr doRequest(HttpRequest::ptr req
                             , uint64_t timeout_ms);
-private:
+protected:
     static void ReleasePtr(HttpConnection* ptr, HttpConnectionPool* pool);
-private:
+protected:
     /// Host字段默认值
     std::string m_host;
-    /// Host字段默认值，m_vhost优先级高于m_host
-    std::string m_vhost;
     /// 端口
     uint32_t m_port;
-    /// 暂未使用
+    /// Host字段默认值，m_vhost优先级高于m_host
+    std::string m_vhost;
+    /// 连接池的最大容量（暂未使用）
     uint32_t m_maxSize;
     /// 单个连接的最大存活时间
     uint32_t m_maxAliveTime;
