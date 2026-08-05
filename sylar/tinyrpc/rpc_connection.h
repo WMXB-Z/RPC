@@ -49,7 +49,7 @@ public:
                        ,uint32_t port
                        ,const std::string& vhost = ""
                        ,uint32_t max_size = 30
-                       ,uint32_t max_alive_time = 1000*30
+                       ,uint32_t max_alive_time = 1000*10
                        ,uint32_t max_request = 5);
 
     /**

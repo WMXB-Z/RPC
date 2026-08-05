@@ -10,8 +10,13 @@ namespace tinyrpc {
 
 RpcChannelClient::RpcChannelClient()
     : m_pool(new RpcConnectionPool(
-          sylar::Config::Lookup("rpc.server_ip", std::string("127.0.0.1"), "rpc server ip")->getValue(),
-          sylar::Config::Lookup("rpc.server_port", (int32_t)8008, "rpc server port")->getValue())) {
+          sylar::Config::Lookup<std::string>("rpc.server_ip")->getValue(),
+          sylar::Config::Lookup<int32_t>("rpc.server_port")->getValue()
+          ,"", 30, 1000*10, 100000)) {
+            // 单纯为了刷QPS而调参，感觉没有多大意义！
+            // 比如这里的conn存活时间设置为10s，复用次数设置为10w，仅是为了提高连接的复用（减少conn的释放）。
+            // 而且我也试过直接将Http层和Tcp层取消，自定义一个PRC协议帧，利用socket进行TCP传输，QPC直接大幅度提升
+            // 但如此一来，Rpc协议的使用就不具有通用性、实用性
 }
 
 void RpcChannelClient::CallMethod(const google::protobuf::MethodDescriptor *method,

@@ -11,9 +11,9 @@
  *
  * example:
  *
- * ./test_rpc_perf -n 100000 -t 8
+ * ./test_rpc_perf -n 100000 -t 4
  *
- * ./test_rpc_perf -d 10 -t 8 -p 64
+ * ./test_rpc_perf -d 10 -t 4 -p 64
  *
  */
 
