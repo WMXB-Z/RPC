@@ -7,6 +7,13 @@
 
 namespace sylar {
 namespace tinyrpc {
+
+RpcChannelClient::RpcChannelClient()
+    : m_pool(new RpcConnectionPool(
+          sylar::Config::Lookup("rpc.server_ip", std::string("127.0.0.1"), "rpc server ip")->getValue(),
+          sylar::Config::Lookup("rpc.server_port", (int32_t)8008, "rpc server port")->getValue())) {
+}
+
 void RpcChannelClient::CallMethod(const google::protobuf::MethodDescriptor *method,
                                   google::protobuf::RpcController *controller, 
                                   const google::protobuf::Message *request,
@@ -17,10 +24,8 @@ void RpcChannelClient::CallMethod(const google::protobuf::MethodDescriptor *meth
         return;
     }
 
-    // 基于TCP进行服务请求
-    // todo:每次都新建TCP连接，性能较差。后续可参考项目里的 HttpConnectionPool 做连接复用。
-    RpcConnectionPool::ptr pool = RpcConnectionPool::getPool();
-    if (!pool->doRequest(method, controller, request, response, 10 * 1000)) {
+    // 使用本客户端独立的连接池收发 RPC
+    if (!m_pool->doRequest(method, controller, request, response, 10 * 1000)) {
         // 若 doRequest 内部已设置具体错误（如超时/连接失败），不要覆盖它
         if (!controller->Failed()) {
             controller->SetFailed("rpc doRequest failed!");
