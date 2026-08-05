@@ -8,12 +8,12 @@ class EchoAddServiceImp : public EchoAddService{
 public:
     typedef std::shared_ptr<EchoAddServiceImp> ptr ;
     std::string echo(){
-        std::cout << "queryEcho RPC is successful";
+        // std::cout << "queryEcho RPC is successful";
         return "hello this is service!";
     }
 
     int32_t add(int32_t a, int32_t b){
-        std::cout << "aueryAdd PRC is successful";
+        // std::cout << "aueryAdd PRC is successful";
         return a + b;
     }
 

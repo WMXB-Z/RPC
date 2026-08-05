@@ -21,7 +21,10 @@ void RpcChannelClient::CallMethod(const google::protobuf::MethodDescriptor *meth
     // todo:每次都新建TCP连接，性能较差。后续可参考项目里的 HttpConnectionPool 做连接复用。
     RpcConnectionPool::ptr pool = RpcConnectionPool::getPool();
     if (!pool->doRequest(method, controller, request, response, 10 * 1000)) {
-        controller->SetFailed("rpc doRequest failed!");
+        // 若 doRequest 内部已设置具体错误（如超时/连接失败），不要覆盖它
+        if (!controller->Failed()) {
+            controller->SetFailed("rpc doRequest failed!");
+        }
         return;
     }
 
