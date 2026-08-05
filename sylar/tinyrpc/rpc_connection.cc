@@ -183,10 +183,14 @@ http::HttpResult::ptr RpcConnectionPool::doRequest(http::HttpRequest::ptr req, u
 
 bool RpcConnectionPool::doRequest(const google::protobuf::MethodDescriptor *method
                                   , google::protobuf::RpcController *controller
-                                  , google::protobuf::Message *request
+                                  , const google::protobuf::Message *request
                                   , google::protobuf::Message *response
                                   , uint64_t timeout_ms){
-            
+    if(!method || !controller || !request || !response){
+        std::cout << "method, controller, request, response must be not nullptr" << std::endl;
+        return false;
+    }
+
     // 获取服务名和方法名
     const google::protobuf::ServiceDescriptor *service_desc = method->service();
     
@@ -211,11 +215,12 @@ bool RpcConnectionPool::doRequest(const google::protobuf::MethodDescriptor *meth
     http_req->setBody(param_str);
 
     // 拿到http response报文，并解析
-    http::HttpResponse::ptr http_res = doRequest(http_req, timeout_ms)->response;
-     if(!http_res){
-        controller->SetFailed("recv response is nullptr!");
+    auto http_result = doRequest(http_req, timeout_ms);
+    if (!http_result || http_result->result != (int)http::HttpResult::Error::OK) {
+        controller->SetFailed(http_result ? http_result->error : "rpc doRequest error!");
         return false;
     }
+    http::HttpResponse::ptr http_res = http_result->response;
 
     if(http_res->getStatus() != http::HttpStatus::OK){
         controller->SetFailed("http server error!");

@@ -91,10 +91,10 @@ public:
      * @return 返回HttpResponse
      */
     bool doRequest(const google::protobuf::MethodDescriptor *method
-                   , google::protobuf::RpcController *controller
-                   , google::protobuf::Message *request
-                   , google::protobuf::Message *response
-                   , uint64_t timeout_ms);
+                    , google::protobuf::RpcController *controller
+                    , const google::protobuf::Message *request
+                    , google::protobuf::Message *response
+                    , uint64_t timeout_ms);
     
     /**
      * @brief 惰性初始化，首次调用时才建池
