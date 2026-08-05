@@ -80,7 +80,6 @@ int main(int argc, char **argv) {
             stub.queryAdd(&ctl, &req, &rsp, nullptr);
             if (ctl.Failed()) {
                 std::cout << "warmup failed:" << ctl.ErrorText() << std::endl;
-
                 return 1;
             }
         }
@@ -123,7 +122,6 @@ int main(int argc, char **argv) {
                     }
                 }
 
-                
                 // 请求数模式
                 else {
                     uint64_t cur = request_count.fetch_add(1);
@@ -166,11 +164,9 @@ int main(int argc, char **argv) {
 
     // 合并latency
     std::vector<int64_t> all;
-
     for (auto &v : latencies) {
         all.insert(all.end(), v.begin(), v.end());
     }
-
     std::sort(all.begin(), all.end());
 
     auto get_percentile = [&](double p) -> int64_t {

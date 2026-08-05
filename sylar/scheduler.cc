@@ -116,7 +116,8 @@ void Scheduler::stop() {
         tickle();
     }
 
-    /// 在use caller情况下，stop前会调用本caller线程的调度器协程，并等其结束返回后，本caller线程的主协程（schedule管理协程）才能结束
+    /// 在use caller情况下，stop前会调用本caller线程的调度器协程,
+    // 并等其结束返回后，本caller线程的主协程（schedule管理协程）才能结束
     if (m_rootFiber) {
         m_rootFiber->resume();  //先切换到调度协程执行
         SYLAR_LOG_DEBUG(g_logger) << "m_rootFiber end";

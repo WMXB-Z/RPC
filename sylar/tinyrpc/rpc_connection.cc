@@ -193,11 +193,6 @@ bool RpcConnectionPool::doRequest(const google::protobuf::MethodDescriptor *meth
 
     // 获取服务名和方法名
     const google::protobuf::ServiceDescriptor *service_desc = method->service();
-    
-    if(!controller){
-        std::cout << "controller is null! is not allow"<<std::endl;
-        return false;
-    }
 
     std::string param_str;
     if (!request->SerializeToString(&param_str)) {
@@ -227,7 +222,8 @@ bool RpcConnectionPool::doRequest(const google::protobuf::MethodDescriptor *meth
         return false;
     }
 
-    if (!response->ParseFromString(http_res->getBody())) {
+    const std::string& ans_str = http_res->getBody();
+    if (!response->ParseFromArray(ans_str.data(),ans_str.length())) {
         controller->SetFailed("response parse from string failed!!");
         return false;
     }

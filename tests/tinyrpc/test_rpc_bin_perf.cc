@@ -120,7 +120,7 @@ int main(int argc, char **argv) {
     std::string ip = sylar::Config::Lookup<std::string>("rpc.server_ip")->getValue();
     int32_t port = sylar::Config::Lookup<int32_t>("rpc.server_port")->getValue();
 
-    uint64_t total = (uint64_t)atoll(sylar::EnvMgr::GetInstance()->get("n", "10000").c_str());
+    uint64_t total = (uint64_t)atoll(sylar::EnvMgr::GetInstance()->get("n", "100000").c_str());
     uint32_t threads = (uint32_t)atoi(sylar::EnvMgr::GetInstance()->get("t", "4").c_str());
     if (total == 0 || threads == 0) {
         std::cout << "usage: test_rpc_bin_perf -n <total> -t <threads>" << std::endl;

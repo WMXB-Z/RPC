@@ -42,3 +42,12 @@ add_executable(test_rpc_bin_perf
     echo_add.poto.pb.cc
 )
 target_link_libraries(test_rpc_bin_perf sylar protobuf yaml-cpp dl pthread)
+
+# 非阻塞事件驱动（IOManager 协程）版性能测试
+add_executable(test_rpc_io_perf
+    test_rpc_io_perf.cc
+    echo_add.poto.pb.cc
+    ${PROJECT_SOURCE_DIR}/sylar/tinyrpc/rpc_channel_client.cc
+    ${PROJECT_SOURCE_DIR}/sylar/tinyrpc/rpc_connection.cc
+)
+target_link_libraries(test_rpc_io_perf sylar protobuf yaml-cpp dl pthread)
