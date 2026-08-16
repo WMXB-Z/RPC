@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
 
     uint64_t total = std::stoull(sylar::EnvMgr::GetInstance()->get("n", "100000"));
     uint32_t threads = std::stoi(sylar::EnvMgr::GetInstance()->get("t", "1"));
-    uint32_t coroutines = std::stoi(sylar::EnvMgr::GetInstance()->get("k", "64"));
+    uint32_t coroutines = std::stoi(sylar::EnvMgr::GetInstance()->get("k", "32"));
     uint32_t connections = std::stoi(sylar::EnvMgr::GetInstance()->get("p", "0"));
     uint32_t duration = std::stoi(sylar::EnvMgr::GetInstance()->get("d", "0"));
     
@@ -71,6 +71,7 @@ int main(int argc, char **argv) {
 
     std::atomic<bool> stop_flag(false);
     std::atomic<bool> warmup_done(false);
+    std::atomic<uint32_t> warmup_pending(0);
     std::atomic<uint64_t> request_count(0);
     std::atomic<uint64_t> success(0);
     std::atomic<uint64_t> failed(0);
@@ -79,25 +80,35 @@ int main(int argc, char **argv) {
 
     sylar::IOManager iom(threads, true, "perf");
 
-    // 预热协程：建立连接并预热（连接在调度线程创建，fd 被登记 → 事件驱动生效）
-    iom.schedule([&]() {
-        sylar::tinyrpc::EchoAddService_Stub stub(clients[0].get());
-        sylar::tinyrpc::AddRequest req;
-        req.set_a(1);
-        req.set_b(2);
-        for (int i = 0; i < 200; i++) {
-            sylar::tinyrpc::AddResponse rsp;
-            sylar::tinyrpc::TinyRpcController ctl;
-            stub.queryAdd(&ctl, &req, &rsp, nullptr);
-            if (ctl.Failed()) {
-                std::cout << "warmup failed:" << ctl.ErrorText() << std::endl;
-                ::exit(1);
+    // 预热：按压测并发形态覆盖所有连接池，提前建连并触发热路径，
+    // 避免正式计时阶段混入 connect/建池开销
+    const uint32_t warmup_coroutines = std::min<uint32_t>(coroutines, 32);
+    const uint32_t warmup_requests = 20;
+    warmup_pending.store(warmup_coroutines);
+
+    for (uint32_t c = 0; c < warmup_coroutines; c++) {
+        iom.schedule([&, c]() {
+            uint32_t index = c % connections;
+            sylar::tinyrpc::EchoAddService_Stub stub(clients[index].get());
+            sylar::tinyrpc::AddRequest req;
+            req.set_a(1);
+            req.set_b(2);
+            for (uint32_t i = 0; i < warmup_requests; i++) {
+                sylar::tinyrpc::AddResponse rsp;
+                sylar::tinyrpc::TinyRpcController ctl;
+                stub.queryAdd(&ctl, &req, &rsp, nullptr);
+                if (ctl.Failed()) {
+                    std::cout << "warmup failed:" << ctl.ErrorText() << std::endl;
+                    ::exit(1);
+                }
             }
-        }
-        // 预热完成，计时开始
-        begin = steady_clock::now();
-        warmup_done.store(true);
-    });
+            // 最后一个预热协程结束时统一开始计时
+            if (--warmup_pending == 0) {
+                begin = steady_clock::now();
+                warmup_done.store(true);
+            }
+        });
+    }
 
     // 压测协程
     for (uint32_t c = 0; c < coroutines; c++) {

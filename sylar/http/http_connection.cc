@@ -6,6 +6,10 @@
 #include "http_connection.h"
 #include "http_parser.h"
 #include "../log.h"
+#include "../hook.h"
+
+#include <cerrno>
+#include <sys/socket.h>
 
 namespace sylar {
 namespace http {
@@ -28,10 +32,44 @@ HttpConnection::HttpConnection(Socket::ptr sock, bool owner, bool keepalive)
         delete[] ptr;
     });
     m_offset = 0;
+    m_createTime =  GetCurrentMS();
 }
 
 HttpConnection::~HttpConnection() {
     SYLAR_LOG_DEBUG(g_logger) << "HttpConnection::~HttpConnection";
+}
+
+bool HttpConnection::isPeerAlive() {
+    Socket::ptr sock = getSocket();
+    if(!sock || !sock->isConnected()) {
+        return false;
+    }
+
+    // 必须临时关闭 hook：Socket::recv 内部的 ::recv 会被 hook 拦截，
+    // 在带 SO_RCVTIMEO 的非阻塞 fd 上会注册事件并让出协程，导致探测阻塞超时
+    bool hook_enable = sylar::is_hook_enable();
+    if(hook_enable) {
+        sylar::set_hook_enable(false);
+    }
+    char c = 0;
+    ssize_t n = sock->recv(&c, 1, MSG_PEEK | MSG_DONTWAIT);
+    if(hook_enable) {
+        sylar::set_hook_enable(true);
+    }
+
+    if(n == 0) {
+        // 对端已发送 FIN（半关闭/已关闭），连接不可复用
+        return false;
+    }
+    if(n > 0) {
+        // 空闲连接上还有未读取的数据，说明上一次响应未完整消费或对端行为异常，为安全不复用
+        return false;
+    }
+    if(errno == EAGAIN || errno == EWOULDBLOCK) {
+        // 无数据且本地状态正常，连接可复用
+        return true;
+    }
+    return false;
 }
 
 HttpResponse::ptr HttpConnection::recvResponse() {
@@ -230,46 +268,68 @@ HttpConnection::ptr HttpConnectionPool::getConnection() {
     uint64_t now_ms = sylar::GetCurrentMS();
     std::vector<HttpConnection*> invalid_conns;
     HttpConnection* ptr = nullptr;
-    MutexType::Lock lock(m_mutex);
-    while(!m_conns.empty()) {
-        auto conn = *m_conns.begin();
-        m_conns.pop_front();
-        if(!conn->isConnected()) {
-            invalid_conns.push_back(conn);
-            continue;
+    bool need_create = false;
+    {
+        MutexType::Lock lock(m_mutex);
+        while(!m_conns.empty()) {
+            auto conn = *m_conns.begin();
+            m_conns.pop_front();
+            // isConnected() 只能反映本地状态，必须再探测对端是否半关闭
+            if(!conn->isConnected() || !conn->isPeerAlive()) {
+                invalid_conns.push_back(conn);
+                continue;
+            }
+            if((conn->m_createTime + m_maxAliveTime) < now_ms) {
+                invalid_conns.push_back(conn);
+                continue;
+            }
+            ptr = conn;
+            break;
         }
-        if((conn->m_createTime + m_maxAliveTime) > now_ms) {
-            invalid_conns.push_back(conn);
-            continue;
+
+        if(!ptr) {
+            if(m_total.load() >= (int32_t)m_maxSize) {
+                // 池已满且没有空闲连接，不再新建
+                need_create = false;
+            } else {
+                // 在锁内先占用名额，避免多线程并发超建
+                ++m_total;
+                need_create = true;
+            }
         }
-        ptr = conn;
-        break;
     }
-    lock.unlock();
+
+    // 在一轮conn的获取后，清除pool中失效的conn
     for(auto i : invalid_conns) {
         delete i;
     }
-    m_total -= invalid_conns.size();
+    m_total -= (int32_t)invalid_conns.size();
 
-    if(!ptr) {
+    if(!ptr && !need_create) {
+        return nullptr;
+    }
+
+    if(need_create) {
         IPAddress::ptr addr = Address::LookupAnyIPAddress(m_host);
         if(!addr) {
             SYLAR_LOG_ERROR(g_logger) << "get addr fail: " << m_host;
+            --m_total;
             return nullptr;
         }
         addr->setPort(m_port);
         Socket::ptr sock = Socket::CreateTCP(addr);
         if(!sock) {
             SYLAR_LOG_ERROR(g_logger) << "create sock fail: " << *addr;
+            --m_total;
             return nullptr;
         }
         if(!sock->connect(addr)) {
             SYLAR_LOG_ERROR(g_logger) << "sock connect fail: " << *addr;
+            --m_total;
             return nullptr;
         }
 
-        ptr = new HttpConnection(sock);// 池子里的连接默认长连接
-        ++m_total;
+        ptr = new HttpConnection(sock); // 池子里的连接默认长连接
     }
 
     // 设置共享指针结束时的回调函数
@@ -280,11 +340,11 @@ HttpConnection::ptr HttpConnectionPool::getConnection() {
 
 void HttpConnectionPool::ReleasePtr(HttpConnection* ptr, HttpConnectionPool* pool) {
     ++ptr->m_request;   //ptr对应的连接使用次数+1
-    if(!ptr->isConnected() || !ptr->isKeepAlive()
-            || ((ptr->m_createTime + pool->m_maxAliveTime) >= sylar::GetCurrentMS())
+    if(!ptr->isConnected() || !ptr->isPeerAlive() || !ptr->isKeepAlive()
+            || ((ptr->m_createTime + pool->m_maxAliveTime) < sylar::GetCurrentMS())
             || (ptr->m_request >= pool->m_maxRequest)) {
-        // ptr->isConnected()只能检查连接使用的本地socket是否已经关闭，无法检查本次TCP是否已经关闭！
-        // 短连接情况下，一次恢复后对端关闭，而本端却不知道（只有在recv一次，socket才会知晓），导致半关闭的连接放回pool池，影响下次工作
+        // isConnected() 只能检查本地 socket 是否关闭；isPeerAlive() 通过 MSG_PEEK
+        // 探测对端是否已 FIN，避免把半关闭的连接放回池中影响下次复用
         delete ptr;
         --pool->m_total;
         return;

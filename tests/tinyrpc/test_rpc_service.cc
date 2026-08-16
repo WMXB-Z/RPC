@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <csignal>
 #include <memory>
 #include "sylar/http/servlet.h"
 #include "sylar/config.h"
@@ -11,11 +12,18 @@
 static sylar::Logger::ptr g_logger = SYLAR_LOG_ROOT();
 sylar::IOManager::ptr worker;
 
+// Ctrl+Z 默认发送 SIGTSTP，只会把进程挂起（Stopped）而不是结束，
+// 导致服务进程继续占用端口，影响下一次启动。这里将 SIGTSTP 视为结束信号。
+static void handle_sig(int sig) {
+    if (sig == SIGTSTP) {
+        _exit(0);
+    }
+}
 
 
 void run() {
     g_logger->setLevel(sylar::LogLevel::WARN);
-    sylar::tinyrpc::RpcServer::ptr server(new sylar::tinyrpc::RpcServer(true, worker.get(), sylar::IOManager::GetThis()));
+    sylar::tinyrpc::RpcServer::ptr server(new sylar::tinyrpc::RpcServer(true, worker.get(), sylar::IOManager::GetThis()));//注意，这里的worker并未使用
     
     std::string g_rpc_bind_ip = sylar::Config::Lookup<std::string>("rpc.bind_ip")->getValue();
     int32_t g_rpc_bind_port = sylar::Config::Lookup<int32_t>("rpc.bind_port")->getValue();
@@ -35,6 +43,8 @@ void run() {
 }
 
 int main(int argc, char **argv) {
+    signal(SIGTSTP, handle_sig);
+
     sylar::EnvMgr::GetInstance()->init(argc, argv);
      // todo:这里设置为绝对路径不太好,但由于配置文件的查找默认是在当前工作目录下进行的，使用相对路径可能会找不到
     sylar::EnvMgr::GetInstance()->add("c", "/home/sylar-from-suycx/conf");
@@ -45,8 +55,7 @@ int main(int argc, char **argv) {
     g_logger->setLevel(sylar::LogLevel::ERROR);
 
     sylar::IOManager iom(1, true, "main");
-    worker.reset(new sylar::IOManager(8, false, "worker"));
+    // worker.reset(new sylar::IOManager(1, false, "worker"));
     iom.schedule(run);
     return 0;
 }
-

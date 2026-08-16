@@ -29,6 +29,7 @@ uint64_t GetFiberId() {
     return Fiber::GetFiberId();
 }
 
+// 单调时钟
 uint64_t GetElapsedMS() {
     struct timespec ts = {0};
     clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
@@ -92,6 +93,7 @@ std::string BacktraceToString(int size, int skip, const std::string &prefix) {
     return ss.str();
 }
 
+// 墙上时钟：返回当前时间戳
 uint64_t GetCurrentMS() {
     struct timeval tv;
     gettimeofday(&tv, NULL);

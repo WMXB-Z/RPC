@@ -199,6 +199,14 @@ public:
 
     bool isKeepAlive() const {return m_keepalive;}
 
+    /**
+     * @brief 探测连接对端是否仍存活
+     * @details isConnected() 只能反映本地 socket 状态，无法发现对端已经发送 FIN
+     *          导致的半关闭连接；本接口通过非阻塞 MSG_PEEK 探测对端状态。
+     * @return true 表示连接可安全复用，false 表示对端已关闭或连接状态异常
+     */
+    bool isPeerAlive();
+
 protected:
     /// 创建时间
     uint64_t m_createTime = 0;
@@ -343,7 +351,7 @@ protected:
     uint32_t m_port;
     /// Host字段默认值，m_vhost优先级高于m_host
     std::string m_vhost;
-    /// 连接池的最大容量（暂未使用）
+    /// 连接池的最大连接数（包含已借出的连接，达到上限后不再新建）
     uint32_t m_maxSize;
     /// 单个连接的最大存活时间
     uint32_t m_maxAliveTime;

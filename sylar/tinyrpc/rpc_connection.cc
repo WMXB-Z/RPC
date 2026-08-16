@@ -55,46 +55,66 @@ RpcConnection::ptr RpcConnectionPool::getConnection() {
     uint64_t now_ms = sylar::GetCurrentMS();
     std::vector<RpcConnection*> invalid_conns;
     RpcConnection* ptr = nullptr;
-    MutexType::Lock lock(m_mutex);
-    while(!m_rpc_conns.empty()) {
-        auto conn = *m_rpc_conns.begin();
-        m_rpc_conns.pop_front();
-        if(!conn->isConnected()) {
-            invalid_conns.push_back(conn);
-            continue;
+    bool need_create = false;
+    {
+        MutexType::Lock lock(m_mutex);
+        while(!m_rpc_conns.empty()) {
+            auto conn = *m_rpc_conns.begin();
+            m_rpc_conns.pop_front();
+            if(!conn->isConnected() || !conn->isPeerAlive()) {
+                invalid_conns.push_back(conn);
+                continue;
+            }
+            if((conn->m_createTime + m_maxAliveTime) < now_ms) {
+                invalid_conns.push_back(conn);
+                continue;
+            }
+            ptr = conn;
+            break;
         }
-        if((conn->m_createTime + m_maxAliveTime) > now_ms) {
-            invalid_conns.push_back(conn);
-            continue;
+
+        if(!ptr) {
+            if(m_total.load() >= (int32_t)m_maxSize) {
+                // 池已满且没有空闲连接，不再新建
+                need_create = false;
+            } else {
+                // 在锁内先占用名额，避免多线程并发超建
+                ++m_total;
+                need_create = true;
+            }
         }
-        ptr = conn;
-        break;
     }
-    lock.unlock();
+
     for(auto i : invalid_conns) {
         delete i;
     }
-    m_total -= invalid_conns.size();
+    m_total -= (int32_t)invalid_conns.size();
 
-    if(!ptr) {
+    if(!ptr && !need_create) {
+        return nullptr;
+    }
+
+    if(need_create) {
         IPAddress::ptr addr = Address::LookupAnyIPAddress(m_host);
         if(!addr) {
             SYLAR_LOG_ERROR(g_logger) << "get addr fail: " << m_host;
+            --m_total;
             return nullptr;
         }
         addr->setPort(m_port);
         Socket::ptr sock = Socket::CreateTCP(addr);
         if(!sock) {
             SYLAR_LOG_ERROR(g_logger) << "create sock fail: " << *addr;
+            --m_total;
             return nullptr;
         }
         if(!sock->connect(addr)) {
             SYLAR_LOG_ERROR(g_logger) << "sock connect fail: " << *addr;
+            --m_total;
             return nullptr;
         }
 
-        ptr = new RpcConnection(sock);// 池子里的连接默认长连接
-        ++m_total;
+        ptr = new RpcConnection(sock); // 池子里的连接默认长连接
     }
 
     // 设置共享指针结束时的回调函数
@@ -233,11 +253,11 @@ bool RpcConnectionPool::doRequest(const google::protobuf::MethodDescriptor *meth
 
 void  RpcConnectionPool::ReleasePtr(RpcConnection* ptr, RpcConnectionPool* pool){
     ++ptr->m_request;   //ptr对应的连接使用次数+1
-    if(!ptr->isConnected() || !ptr->isKeepAlive()
-            || ((ptr->m_createTime + pool->m_maxAliveTime) >= sylar::GetCurrentMS())
+    if(!ptr->isConnected() || !ptr->isPeerAlive() || !ptr->isKeepAlive()
+            || ((ptr->m_createTime + pool->m_maxAliveTime) < sylar::GetCurrentMS())
             || (ptr->m_request >= pool->m_maxRequest)) {
-        // ptr->isConnected()只能检查连接使用的本地socket是否已经关闭，无法检查本次TCP是否已经关闭！
-        // 短连接情况下，一次恢复后对端关闭，而本端却不知道（只有在recv一次，socket才会知晓），导致半关闭的连接放回pool池，影响下次工作
+        // isConnected() 只能检查本地 socket 是否关闭；isPeerAlive() 通过 MSG_PEEK
+        // 探测对端是否已 FIN，避免把半关闭的连接放回池中影响下次复用
         delete ptr;
         --pool->m_total;
         return;

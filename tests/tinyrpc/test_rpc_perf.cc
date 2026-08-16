@@ -47,8 +47,8 @@ int main(int argc, char **argv) {
 
     // 参数
     uint64_t total = std::stoull(sylar::EnvMgr::GetInstance()->get("n", "100000"));
-    uint32_t threads = std::stoi(sylar::EnvMgr::GetInstance()->get("t", "8"));
-    uint32_t connections = std::stoi(sylar::EnvMgr::GetInstance()->get("p", "0"));
+    uint32_t threads = std::stoi(sylar::EnvMgr::GetInstance()->get("t", "1"));
+    uint32_t connections = std::stoi(sylar::EnvMgr::GetInstance()->get("p", "32"));
     uint32_t duration = std::stoi(sylar::EnvMgr::GetInstance()->get("d", "0"));
 
     // 默认连接数=线程数
@@ -67,20 +67,22 @@ int main(int argc, char **argv) {
         clients.emplace_back(std::make_shared<sylar::tinyrpc::RpcChannelClient>());
     }
 
-    // 配置预热
+    // 预热：覆盖所有连接池，提前建连，避免正式计时阶段混入 connect 开销
     {
-        sylar::tinyrpc::EchoAddService_Stub stub(clients[0].get());
         sylar::tinyrpc::AddRequest req;
         req.set_a(1);
         req.set_b(2);
 
-        for (int i = 0; i < 500; i++) {
-            sylar::tinyrpc::AddResponse rsp;
-            sylar::tinyrpc::TinyRpcController ctl;
-            stub.queryAdd(&ctl, &req, &rsp, nullptr);
-            if (ctl.Failed()) {
-                std::cout << "warmup failed:" << ctl.ErrorText() << std::endl;
-                return 1;
+        for (auto &client : clients) {
+            sylar::tinyrpc::EchoAddService_Stub stub(client.get());
+            for (int i = 0; i < 100; i++) {
+                sylar::tinyrpc::AddResponse rsp;
+                sylar::tinyrpc::TinyRpcController ctl;
+                stub.queryAdd(&ctl, &req, &rsp, nullptr);
+                if (ctl.Failed()) {
+                    std::cout << "warmup failed:" << ctl.ErrorText() << std::endl;
+                    return 1;
+                }
             }
         }
     }

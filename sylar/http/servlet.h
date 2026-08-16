@@ -150,6 +150,11 @@ public:
      * @brief 构造函数
      */
     ServletDispatch();
+
+    /**
+     * @brief 为访问路径的匹配已注册的sevlet（间接调用getMatchedServlet）
+     * @return int32_t 目前返回值无意义
+     */
     virtual int32_t handle(sylar::http::HttpRequest::ptr request
                    , sylar::http::HttpResponse::ptr response
                    , sylar::http::HttpSession::ptr session) override;
@@ -243,9 +248,9 @@ public:
     Servlet::ptr getGlobServlet(const std::string& uri);
 
     /**
-     * @brief 通过uri获取servlet
+     * @brief 通过uri匹配servlet
      * @param[in] uri uri
-     * @return 优先精准匹配,其次模糊匹配,最后返回默认
+     * @return 优先精准匹配,其次模糊匹配,最后返回默认sevlet兜底
      */
     Servlet::ptr getMatchedServlet(const std::string& uri);
 

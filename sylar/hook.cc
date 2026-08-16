@@ -187,6 +187,7 @@ int usleep(useconds_t usec) {
     sylar::Fiber::GetThis()->yield();
     return 0;
 }
+
 // 纳秒级sleep
 int nanosleep(const struct timespec *req, struct timespec *rem) {
     if(!sylar::t_hook_enable) {

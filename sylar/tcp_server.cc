@@ -77,9 +77,8 @@ void TcpServer::startAccept(Socket::ptr sock) {
         Socket::ptr client = sock->accept();    //执行实际的 accept 动作
         if(client) {
             client->setRecvTimeout(m_recvTimeout);
-            // 连接成功后，将 新连接的相关处理handleClient 作为待调度的任务（本系统中啥也不做） 加入到任务调度器中
-            m_ioWorker->schedule(std::bind(&TcpServer::handleClient,
-                        shared_from_this(), client));
+            // 连接成功后，将 新连接的相关处理handleClient 作为待调度的任务加入到任务调度器中
+            m_ioWorker->schedule(std::bind(&TcpServer::handleClient, shared_from_this(), client));
         } else {
             SYLAR_LOG_ERROR(g_logger) << "accept errno=" << errno
                 << " errstr=" << strerror(errno);
@@ -94,8 +93,7 @@ bool TcpServer::start() {
     m_isStop = false;
     for(auto& sock : m_socks) {
         // 将对应sock的"TCP连接任务" 作为 待执行的任务，加入到调度器中
-        m_acceptWorker->schedule(std::bind(&TcpServer::startAccept,
-                    shared_from_this(), sock));
+        m_acceptWorker->schedule(std::bind(&TcpServer::startAccept, shared_from_this(), sock));
     }
     return true;
 }

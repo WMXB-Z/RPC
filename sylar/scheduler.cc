@@ -80,6 +80,7 @@ void Scheduler::start() {
 
 bool Scheduler::stopping() {
     MutexType::Lock lock(m_mutex);
+    // 停止表示m_stopping为true，待调度的任务队列为空，目前正在工作的线程数量=0
     return m_stopping && m_tasks.empty() && m_activeThreadCount == 0;
 }
 
@@ -153,7 +154,7 @@ void Scheduler::run() {
         {
             MutexType::Lock lock(m_mutex);
             auto it = m_tasks.begin();
-            // 遍历所有调度任务
+            // 遍历所有调度任务：1、找本线程能做的任务。2、其它线程能做的任务，则tickle_me设置为true
             while (it != m_tasks.end()) {
                 if (it->thread != -1 && it->thread != sylar::GetThreadId()) {
                     // 指定了调度线程，但不是在当前线程上调度，标记一下需要通知其他线程进行调度，然后跳过这个任务，继续下一个
@@ -166,8 +167,9 @@ void Scheduler::run() {
                 SYLAR_ASSERT(it->fiber || it->cb);
 
                 // [BUG FIX]: hook IO相关的系统调用时，在检测到IO未就绪的情况下，会先添加对应的读写事件，再yield当前协程，等IO就绪后再resume当前协程
-                // 多线程高并发情境下，有可能发生刚添加事件就被触发的情况，如果此时当前协程还未来得及yield，则这里就有可能出现协程状态仍为RUNNING的情况
-                // 这里简单地跳过这种情况，以损失一点性能为代价，否则整个协程框架都要大改。
+                // 多线程高并发情境下，有可能发生刚添加事件就被触发的情况，例如一个协程A由于上述现象被立即放回任务队列中，但当前线程对协程A还未来得及yield，
+                // 这样一来，当前线程还在做协程A，任务队列中也存在协程A，就有可能就会出现两个线程同时执行同一个协程的问题！
+                // 这里的做法是：如果分配到的任务协程当前状态是Fiber::RUNNING，这就意味着另一个线程还没来的即yield，那当前线程就不做而是跳过它
                 // 总而言之就是：协程还没有真正挂起（yield），但是 IO 事件已经触发，导致调度器错误判断这个协程状态。
                 if(it->fiber && it->fiber->getState() == Fiber::RUNNING) {
                     ++it;
@@ -184,7 +186,7 @@ void Scheduler::run() {
             tickle_me |= (it != m_tasks.end());
         }
 
-        if (tickle_me) {    //实际上啥也不做
+        if (tickle_me) {    //tickle其他阻塞在epoll_wait的线程
             tickle();
         }
 
@@ -211,7 +213,13 @@ void Scheduler::run() {
                 break;
             }
             ++m_idleThreadCount;
-            idle_fiber->resume();//scheduler中的idle其实什么也不做，而是直接会yield，返回到"任务添加协程"
+            // 切换到idle协程
+            // scheduler中的idle其实什么也不做，而是直接会yield，返回到"任务添加协程"
+            // 而IOManage中idle重写后，会发生while(true){sleep阻塞}，直至：
+            // 1、mian线程通过m_stopping告知任务确实已经结束，工作线程可以退出了
+            // 2、任务队列中被添加了新任务，对方通过tickle()，给pip写入一个字节来通知循环可以退出了
+            // 3、epoll event就绪了（IO事件或定时器事件）
+            idle_fiber->resume();
             --m_idleThreadCount;
         }
     }

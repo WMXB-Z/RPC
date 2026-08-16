@@ -29,7 +29,8 @@ pid_t GetThreadId();
 uint64_t GetFiberId();
 
 /**
- * @brief 获取当前启动的毫秒数，参考clock_gettime(2)，使用CLOCK_MONOTONIC_RAW
+ * @brief 获取当前启动的毫秒数，用于判断时间回退。
+    参考clock_gettime(2)，使用CLOCK_MONOTONIC_RAW
  */
 uint64_t GetElapsedMS();
 
