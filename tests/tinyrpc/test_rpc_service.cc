@@ -12,10 +12,9 @@ static sylar::Logger::ptr g_logger = SYLAR_LOG_ROOT();
 sylar::IOManager::ptr worker;
 
 
-
 void run() {
     g_logger->setLevel(sylar::LogLevel::WARN);
-    sylar::tinyrpc::RpcServer::ptr server(new sylar::tinyrpc::RpcServer(true, worker.get(), sylar::IOManager::GetThis()));
+    sylar::tinyrpc::RpcServer::ptr server(new sylar::tinyrpc::RpcServer(true, worker.get(), sylar::IOManager::GetThis()));//注意，这里的worker并未使用
     
     std::string g_rpc_bind_ip = sylar::Config::Lookup<std::string>("rpc.bind_ip")->getValue();
     int32_t g_rpc_bind_port = sylar::Config::Lookup<int32_t>("rpc.bind_port")->getValue();
@@ -45,7 +44,7 @@ int main(int argc, char **argv) {
     g_logger->setLevel(sylar::LogLevel::ERROR);
 
     sylar::IOManager iom(1, true, "main");
-    worker.reset(new sylar::IOManager(8, false, "worker"));
+    // worker.reset(new sylar::IOManager(1, false, "worker"));
     iom.schedule(run);
     return 0;
 }

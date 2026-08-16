@@ -6,7 +6,8 @@
 #include "sylar/iomanager.h"
 namespace sylar{
 namespace tinyrpc{
-// RpcService基本就是复用HttpServer的提供的接口功能即可
+
+// RpcService基本就复用HttpServer的提供的接口功能即可
 class RpcServer : public http::HttpServer{
 public:
     typedef std::shared_ptr<RpcServer> ptr;

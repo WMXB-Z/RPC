@@ -123,7 +123,7 @@ uint64_t TimerManager::getNextTimer() {
     RWMutexType::ReadLock lock(m_mutex);
     m_tickled = false;  //表示已经"重设最近触发时间"
     if(m_timers.empty()) {
-        return ~0ull;
+        return ~0ull;   //最大超时时间设置为全1的unsiged long long 
     }
 
     const Timer::ptr& next = *m_timers.begin();
@@ -148,9 +148,9 @@ void TimerManager::listExpiredCb(std::vector<std::function<void()> >& cbs) {
     if(m_timers.empty()) {
         return;
     }
-    bool rollover = false;
+    bool rollover = false;  //判断是否有时间回退问题
     if(SYLAR_UNLIKELY(detectClockRollover(now_ms))) {
-        // 使用clock_gettime(CLOCK_MONOTONIC_RAW)，应该不可能出现时间回退的问题
+        // 使用clock_gettime(CLOCK_MONOTONIC_RAW)后，不会出现时间回退的问题
         rollover = true;
     }
     if(!rollover && ((*m_timers.begin())->m_next > now_ms)) {
@@ -168,7 +168,8 @@ void TimerManager::listExpiredCb(std::vector<std::function<void()> >& cbs) {
 
     for(auto& timer : expired) {
         cbs.push_back(timer->m_cb);
-        if(timer->m_recurring) {
+
+        if(timer->m_recurring) {    //循环任务要重新放回计时器set中
             timer->m_next = now_ms + timer->m_ms;
             m_timers.insert(timer);
         } else {
@@ -178,15 +179,18 @@ void TimerManager::listExpiredCb(std::vector<std::function<void()> >& cbs) {
 }
 
 void TimerManager::addTimer(Timer::ptr val, RWMutexType::WriteLock& lock) {
-    auto it = m_timers.insert(val).first;
-    //新定时器插入到了首个位置，且还未重设"最近触发时间"，则标记为"需要重设"，即m_tickled=true
+    auto it = m_timers.insert(val).first;   //set.insert返回的是pair(插入位置迭代器,是否插入成功)
+    //判断新定时器是否插入到了首个位置，且还未重设"最近触发时间"，则标记为"需要重设"，即m_tickled=true
     bool at_front = (it == m_timers.begin()) && !m_tickled;
     if(at_front) {
         m_tickled = true;
     }
     lock.unlock();
 
-    if(at_front) {
+    //插入首个位置的定时器需要进行的处理，实际上就是触发tickled()
+    // 为什么要这样做：epoll_wait 的超时时间总是等于当时最小的定时器时间，如果当时的最小定时器时间为3s，
+    // 现在新插入的定时器时间为0.5s，如果没有提前唤醒，则意味着epoll_wait依然要阻塞3s，新插入的定时器意味着要晚2.5s执行
+    if(at_front) {  
         onTimerInsertedAtFront();
     }
 }
@@ -196,6 +200,7 @@ bool TimerManager::detectClockRollover(uint64_t now_ms) {
     if(now_ms < m_previouseTime && now_ms < (m_previouseTime - 60 * 60 * 1000)) {
         rollover = true;
     }
+    //更新"上一次时间点"
     m_previouseTime = now_ms;
     return rollover;
 }

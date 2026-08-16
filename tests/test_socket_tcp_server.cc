@@ -1,8 +1,6 @@
 /**
  * @file test_socket.cc
  * @brief 测试Socket类，tcp服务器
- * @version 0.1
- * @date 2021-09-18
  */
 #include <sylar/sylar.h>
 

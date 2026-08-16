@@ -6,7 +6,6 @@
 #include "iomanager.h"
 #include "log.h"
 #include "macro.h"
-// #include "util.h"
 #include <cstring>     // for memset()
 #include <fcntl.h>     // for fcntl()
 #include <sys/epoll.h> // for epoll_xxx()
@@ -104,7 +103,7 @@ IOManager::IOManager(size_t threads, bool use_caller, const std::string &name)
     : Scheduler(threads, use_caller, name) {
     m_epfd = epoll_create(5000);
     SYLAR_ASSERT(m_epfd > 0);
-
+    
     int rt = pipe(m_tickleFds);
     SYLAR_ASSERT(!rt);
 
@@ -328,7 +327,7 @@ IOManager *IOManager::GetThis() {
 }
 
 /**
- * 通知调度协程、也就是Scheduler::run()从idle中退出
+ * 通知调度协程、也就是Scheduler::()从idle中退出
  * Scheduler::run()每次从idle协程中退出之后，都会重新把任务队列里的所有任务执行完了再重新进入idle
  * 如果没有调度线程处理于idle状态，那也就没必要发通知了
  */
@@ -350,6 +349,7 @@ bool IOManager::stopping(uint64_t &timeout) {
     // 对于IOManager而言，必须等所有待调度的IO事件都执行完了才可以退出
     // 增加定时器功能后，还应该保证没有剩余的定时器待触发
     timeout = getNextTimer();
+    // 停止需要满足的条件：定时器任务已经全部完成、注册的epoll event已经做完、符合Scheduler的stopping要求
     return timeout == ~0ull && m_pendingEventCount == 0 && Scheduler::stopping();
 }
 
@@ -372,6 +372,7 @@ void IOManager::idle() {
         // 获取下一个定时器的超时时间，顺便判断调度器是否停止
         uint64_t next_timeout = 0;
         if( SYLAR_UNLIKELY(stopping(next_timeout))) {
+            //当stopping()结果为true时，表示程序符合退出状态（无剩余任务调度，epoll中所有任务、定时所有任务已做完）
             SYLAR_LOG_DEBUG(g_logger) << "name=" << getName() << "idle stopping exit";
             break;
         }
@@ -389,12 +390,12 @@ void IOManager::idle() {
             rt = epoll_wait(m_epfd, events, MAX_EVNETS, (int)next_timeout);
             if(rt < 0 && errno == EINTR) {
                 continue;
-            } else {
+            } else {//超时返回0，就绪返回就绪事件数量
                 break;
             }
         } while(true);
 
-        // 收集所有已超时的定时器，执行回调函数
+        // 1）依次执行已经到点的定时器任务
         std::vector<std::function<void()>> cbs;
         listExpiredCb(cbs);
         if(!cbs.empty()) {
@@ -404,7 +405,7 @@ void IOManager::idle() {
             cbs.clear();
         }
         
-        // 遍历所有发生的事件，根据epoll_event的私有指针找到对应的FdContext，进行事件处理
+        // 2）依次处理就绪的Event 事件，根据epoll_event的私有指针找到对应的FdContext，进行事件处理
         for (int i = 0; i < rt; ++i) {
             epoll_event &event = events[i];
             if (event.data.fd == m_tickleFds[0]) {

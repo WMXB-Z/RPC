@@ -19,8 +19,10 @@ int32_t FunctionServlet::handle(sylar::http::HttpRequest::ptr request
 
 ServletDispatch::ServletDispatch()
     :Servlet("ServletDispatch") {
+    //设置匹配失败时的兜底sevlet
     m_default.reset(new NotFoundServlet("sylar/1.0"));
 }
+
 
 int32_t ServletDispatch::handle(sylar::http::HttpRequest::ptr request
                , sylar::http::HttpResponse::ptr response
@@ -112,17 +114,16 @@ Servlet::ptr ServletDispatch::getGlobServlet(const std::string& uri) {
 
 Servlet::ptr ServletDispatch::getMatchedServlet(const std::string& uri) {
     RWMutexType::ReadLock lock(m_mutex);
-    auto mit = m_datas.find(uri);
+    auto mit = m_datas.find(uri);   //先尝试在m_datas中精确匹配
     if(mit != m_datas.end()) {
         return mit->second->get();
     }
-    for(auto it = m_globs.begin();
-            it != m_globs.end(); ++it) {
+    for(auto it = m_globs.begin(); it != m_globs.end(); ++it) {//在尝试在m_globs中模糊匹配
         if(!fnmatch(it->first.c_str(), uri.c_str(), 0)) {
             return it->second->get();
         }
     }
-    return m_default;
+    return m_default;   //兜底的sevlet
 }
 
 void ServletDispatch::listAllServletCreator(std::map<std::string, IServletCreator::ptr>& infos) {

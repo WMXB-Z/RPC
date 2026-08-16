@@ -1,8 +1,6 @@
 /**
  * @file test_scheduler.cc
  * @brief 协程调度器测试
- * @version 0.1
- * @date 2021-06-15
  */
 
 #include "sylar/sylar.h"

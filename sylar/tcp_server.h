@@ -46,13 +46,13 @@ public:
                         ,std::vector<Address::ptr>& fails);
 
     /**
-     * @brief 启动服务
+     * @brief 启动服务(将“接收TCP连接startAccept()”这一任务加入m_acceptWorker中，等待调度执行)
      * @pre 需要bind成功后执行
      */
     virtual bool start();
 
     /**
-     * @brief 停止服务
+     * @brief 停止服务（将“关闭TCP连接”这一任务加入到m_acceptWorker中，等待调度）
      */
     virtual void stop();
 
@@ -88,7 +88,7 @@ public:
 
 protected:
     /**
-     * @brief 处理新连接的Socket类（本系统中这里啥也不做）
+     * @brief 处理新连接的Socket类（会在派生类的HttpServer中重载实现）
      */
     virtual void handleClient(Socket::ptr client);
 

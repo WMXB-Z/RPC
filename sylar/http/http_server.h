@@ -46,6 +46,11 @@ public:
 
     virtual void setName(const std::string& v) override;
 protected:
+    /**
+     * @brief 定义连接完成后的处理任务（即：不停地recv、send等操作）
+     * 
+     * @param client 
+     */
     virtual void handleClient(Socket::ptr client) override;
 private:
     /// 是否支持长连接

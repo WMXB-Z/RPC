@@ -1,8 +1,6 @@
 /**
  * @file test_tcp_server.cc
  * @brief TcpServer类测试
- * @version 0.1
- * @date 2021-09-18
  */
 #include "sylar/sylar.h"
 

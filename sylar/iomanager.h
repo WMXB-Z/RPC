@@ -133,7 +133,7 @@ public:
     bool cancelAll(int fd);
 
     /**
-     * @brief 返回当前的IOManager
+     * @brief 返回当前线程关联的IOManager
      */
     static IOManager *GetThis();
 
