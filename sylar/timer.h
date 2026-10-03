@@ -29,7 +29,7 @@ public:
     bool cancel();
 
     /**
-     * @brief 刷新设置定时器的执行时间（用于定时器的周期性刷新）
+     * @brief 刷新设置定时器的执行时间（用于定时器的周期性刷新，处理涉及对最小堆中定时器排序的变动）
      */
     bool refresh();
 
@@ -47,8 +47,7 @@ private:
      * @param[in] recurring 是否循环
      * @param[in] manager 定时器管理器
      */
-    Timer(uint64_t ms, std::function<void()> cb,
-          bool recurring, TimerManager* manager);
+    Timer(uint64_t ms, std::function<void()> cb, bool recurring, TimerManager* manager);
 
     /**
      * @brief 构造函数
@@ -60,11 +59,11 @@ private:
     bool m_recurring = false;
     /// 执行周期（周期间隔）
     uint64_t m_ms = 0;
-    /// 精确的执行时间（绝对时间点）
+    /// 精确的执行时间（绝对时间点，即该定时器构建时间+执行周期m_ms）
     uint64_t m_next = 0;
     /// 回调函数
     std::function<void()> m_cb;
-    /// 定时器管理器
+    /// 定时器管理器（对该定时器的修改，涉及到所示定时器管理器的锁）
     TimerManager* m_manager = nullptr;
 private:
     /**
@@ -82,7 +81,7 @@ private:
 
 /**
  * @brief 定时器管理器
- */
+*/
 class TimerManager {
 friend class Timer;
 public:
@@ -134,6 +133,7 @@ public:
      * @brief 是否有定时器
      */
     bool hasTimer();
+    
 protected:
 
     /**

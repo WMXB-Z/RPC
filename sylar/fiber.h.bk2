@@ -1,7 +1,7 @@
 /**
  * @file fiber.h
  * @brief 协程模块
- * @details 基于ucontext_t实现（保存线程当前的执行上下文内容），非对称协程
+ * @details 基于ucontext_t实现，非对称协程
  */
 
 #ifndef __SYLAR_FIBER_H__

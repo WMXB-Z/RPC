@@ -13,8 +13,8 @@ sylar::IOManager::ptr worker;
 
 void run() {
     g_logger->setLevel(sylar::LogLevel::WARN);
-    sylar::http::HttpServer::ptr server(new sylar::http::HttpServer(true, worker.get(), sylar::IOManager::GetThis()));
-    // sylar::http::HttpServer::ptr server(new sylar::http::HttpServer(true));
+    // sylar::http::HttpServer::ptr server(new sylar::http::HttpServer(true, worker.get(), sylar::IOManager::GetThis()));
+    sylar::http::HttpServer::ptr server(new sylar::http::HttpServer(true));
     sylar::Address::ptr addr = sylar::Address::LookupAnyIPAddress("0.0.0.0:8020");
     while (!server->bind(addr)) {
         sleep(2);

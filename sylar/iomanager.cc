@@ -81,10 +81,10 @@ void IOManager::FdContext::resetEventContext(EventContext &ctx) {
 }
 
 void IOManager::FdContext::triggerEvent(IOManager::Event event) {
-    // 待触发的事件必须已被注册过
+    // 待触发的事件必须是该FDContext注册过的事件
     SYLAR_ASSERT(events & event);
     /**
-     * 清除该事件，表示不再关注该事件了
+     * 在FdContext中清除该事件，表示不再关注该事件了
      * 也就是说，注册的IO事件是一次性的，如果想持续关注某个socket fd的读写事件，那么每次触发事件之后都要重新添加
      */
     events = (Event)(events & ~event);
@@ -245,7 +245,7 @@ bool IOManager::delEvent(int fd, Event event) {
 }
 
 bool IOManager::cancelEvent(int fd, Event event) {
-    // 找到fd对应的FdContext
+    // 访问成员m_fdContexts，需要锁m_mutex
     RWMutexType::ReadLock lock(m_mutex);
     if ((int)m_fdContexts.size() <= fd) {
         return false;
@@ -253,6 +253,7 @@ bool IOManager::cancelEvent(int fd, Event event) {
     FdContext *fd_ctx = m_fdContexts[fd];
     lock.unlock();
 
+    // 访问该fdContest需要加锁
     FdContext::MutexType::Lock lock2(fd_ctx->mutex);
     if (SYLAR_UNLIKELY(!(fd_ctx->events & event))) {
         return false;
@@ -260,7 +261,7 @@ bool IOManager::cancelEvent(int fd, Event event) {
 
     // 删除事件
     Event new_events = (Event)(fd_ctx->events & ~event);
-    int op           = new_events ? EPOLL_CTL_MOD : EPOLL_CTL_DEL;
+    int op = new_events ? EPOLL_CTL_MOD : EPOLL_CTL_DEL;
     epoll_event epevent;
     epevent.events   = EPOLLET | new_events;
     epevent.data.ptr = fd_ctx;
@@ -417,6 +418,7 @@ void IOManager::idle() {
             }
 
             FdContext *fd_ctx = (FdContext *)event.data.ptr;
+            // !这里的fd_ctx->mutex会保证下面的部分和条件定时器中执行的cancelEvent串行化
             FdContext::MutexType::Lock lock(fd_ctx->mutex);
             /**
              * EPOLLERR: 出错，比如写读端已经关闭的pipe
@@ -434,15 +436,16 @@ void IOManager::idle() {
                 real_events |= WRITE;
             }
 
+            // 该event没有关注的事件需要做
             if ((fd_ctx->events & real_events) == NONE) {
                 continue;
             }
 
-            // 剔除已经发生的事件，将剩下的事件重新加入epoll_wait
+            // !剔除已经发生的事件，修改epoll监视器中的event为监听将剩下的事件，没有剩余的事件需要监听则从epoll监视器中删除
             int left_events = (fd_ctx->events & ~real_events);
-            int op          = left_events ? EPOLL_CTL_MOD : EPOLL_CTL_DEL;
-            event.events    = EPOLLET | left_events;
-
+            int op = left_events ? EPOLL_CTL_MOD : EPOLL_CTL_DEL;
+            event.events = EPOLLET | left_events;
+            // 重新加入epoll监视器 or 从epoll监视器中删除
             int rt2 = epoll_ctl(m_epfd, op, fd_ctx->fd, &event);
             if (rt2) {
                 SYLAR_LOG_ERROR(g_logger) << "epoll_ctl(" << m_epfd << ", "
@@ -451,7 +454,7 @@ void IOManager::idle() {
                 continue;
             }
 
-            // 处理已经发生的事件，也就是让调度器调度指定的函数或协程
+            // 将已经触发的事件从fd_ctx中清除，同时将epoll实例中待就绪的IO事件数量-1
             if (real_events & READ) {
                 fd_ctx->triggerEvent(READ);
                 --m_pendingEventCount;

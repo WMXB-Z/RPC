@@ -116,7 +116,7 @@ public:
     bool delEvent(int fd, Event event);
 
     /**
-     * @brief 取消事件
+     * @brief 取消fd中的关注某个事件（取消写事件，取消读读事件）
      * @param[in] fd socket句柄
      * @param[in] event 事件类型
      * @attention 如果该事件被注册过回调，那就触发一次回调事件
@@ -125,7 +125,7 @@ public:
     bool cancelEvent(int fd, Event event);
 
     /**
-     * @brief 取消所有事件
+     * @brief 取消该fd中关注的所有事件（即写事件和读事件等等，全部清空）
      * @details 所有被注册的回调事件在cancel之前都会被执行一次
      * @param[in] fd socket句柄
      * @return 是否删除成功
@@ -180,7 +180,7 @@ private:
     int m_epfd = 0;
     /// pipe 文件句柄，fd[0]读端，fd[1]写端
     int m_tickleFds[2];
-    /// 当前等待执行的IO事件数量
+    /// 当前已经通过 addEvent 注册在 epoll 上、尚未被处理/取消/删除的 IO 事件个数
     std::atomic<size_t> m_pendingEventCount = {0};
     /// IOManager的Mutex
     RWMutexType m_mutex;

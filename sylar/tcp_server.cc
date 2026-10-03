@@ -73,7 +73,7 @@ bool TcpServer::bind(const std::vector<Address::ptr>& addrs
 }
 
 void TcpServer::startAccept(Socket::ptr sock) {
-    while(!m_isStop) {
+    while(!m_isStop) {  //通过while，将bind端口上所有的连接请求进行accept()
         Socket::ptr client = sock->accept();    //执行实际的 accept 动作
         if(client) {
             client->setRecvTimeout(m_recvTimeout);

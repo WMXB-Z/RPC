@@ -45,6 +45,7 @@ void hook_init() {
     if(is_inited) {
         return;
     }
+    // 对已经定义好的各个name_f进行函数入口的绑定，让库函数可以被调用
 #define XX(name) name ## _f = (name ## _fun)dlsym(RTLD_NEXT, #name);
     HOOK_FUN(XX);
 #undef XX
@@ -212,7 +213,7 @@ int socket(int domain, int type, int protocol) {
     if(fd == -1) {
         return fd;
     }
-    sylar::FdMgr::GetInstance()->get(fd, true);
+    sylar::FdMgr::GetInstance()->get(fd, true); //调用socket hook,将socket设置非阻塞的！
     return fd;
 }
 

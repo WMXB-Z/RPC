@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    // 每个 RpcChannelClient 持有独立连接池
+    // 其中，每个 RpcChannelClient 持有独立连接池
     std::vector<std::shared_ptr<sylar::tinyrpc::RpcChannelClient> > clients;
     for (uint32_t i = 0; i < connections; i++) {
         clients.emplace_back(std::make_shared<sylar::tinyrpc::RpcChannelClient>());
